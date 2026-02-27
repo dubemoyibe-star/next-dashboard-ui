@@ -1,9 +1,23 @@
+import { Menu } from 'lucide-react';
 import Image from 'next/image'
 import React from 'react'
 
-const Navbar = () => {
+type NavbarProps = {
+  toggleSidebar?: () => void;
+};
+
+const Navbar = ({ toggleSidebar }: NavbarProps) => {
   return (
     <div className='flex items-center justify-between p-4'>
+      {toggleSidebar && (
+        <button
+          className="lg:hidden mx-2 p-2 text-gray-600"
+          onClick={toggleSidebar}
+        >
+          <Menu className='w-5 h-5' />
+        </button>
+      )}
+
       {/*SEARCH BAR */}
       <div className='hidden text-xs md:flex items-center gap-2  rounded-full ring-[1.5px] ring-gray-300 px-2'>
         <label className='sr-only'>Search</label>
