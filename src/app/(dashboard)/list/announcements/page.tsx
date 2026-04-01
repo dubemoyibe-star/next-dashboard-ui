@@ -1,8 +1,4 @@
-import React from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { ArrowDownWideNarrow, Plus, SlidersHorizontal } from 'lucide-react'
-import { announcementsData, role} from '@/lib/data'
+import { ArrowDownWideNarrow,  SlidersHorizontal } from 'lucide-react'
 import Table from '@/components/Table'
 import Pagination from '@/components/Pagination'
 import TableSearch from '@/components/TableSearch'
@@ -10,63 +6,10 @@ import FormModal from '@/components/FormModal'
 import { prisma } from '@/lib/prisma'
 import { ITEM_PER_PAGE } from '@/lib/settings'
 import { Announcement, Class, Prisma } from '@/generated/prisma/client'
+import { auth } from '@clerk/nextjs/server'
 
 type AnnouncementList = Announcement & {
   class: Class
-}
-
-
-const columns = [
-  {
-    header: 'Title', 
-    accessor: 'title'
-  },
-  {
-    header: 'Class', 
-    accessor: 'class', 
-  },
-  {
-    header: 'Date', 
-    accessor: 'date', 
-    className: 'hidden md:table-cell'
-  },
-  {
-    header: 'Actions', 
-    accessor: 'actions', 
-    
-  },
-
-]
-
-const renderRow = (item : AnnouncementList) => {
-return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight transition-colors cursor-pointer'>
-  <td className='flex items-center gap-4 p-4'>
-   {item.title}
-  </td>
-  <td>{item.class.name}</td>
-  <td className='hidden md:table-cell'>
-    {new Intl.DateTimeFormat("en-US").format(item.date)} 
-  </td>
-  <td>
-    <div className='flex items-center gap-2'>
-      {/* <Link href={`/list/student/${item.id}`}>
-      <button className='w-7 h-7 flex items-center justify-center rounded-full bg-lamaSky'>
-        <Image src="/edit.png" alt="" width={16} height={16}/>
-      </button>
-      </Link> */}
-
-      {role === "admin"  && (
-      // <button className='w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple'>
-      //   <Image src="/delete.png" alt="" width={16} height={16}/>
-      // </button>
-      <>
-        <FormModal type="update" table="announcement" data={item}/>
-        <FormModal type="delete" table="announcement" id={item.id}/>
-      </>
-      )}
-    </div>
-  </td>
-</tr>
 }
 
 const AnnouncementListPage = async ({
@@ -77,6 +20,36 @@ const AnnouncementListPage = async ({
 
   const {page, ...queryParams} = searchParams || {}
   const p = page ? parseInt(page) : 1
+
+  const { sessionClaims } = await auth()
+  const role = (sessionClaims?.metadata as {role?: string})?.role
+
+  const columns = [
+    { header: 'Title', accessor: 'title' },
+    { header: 'Class', accessor: 'class' },
+    { header: 'Date', accessor: 'date', className: 'hidden md:table-cell' },
+    ...(role === 'admin' ? [{ header: 'Actions', accessor: 'actions' }] : []),
+  ]
+
+  const renderRow = (item: AnnouncementList) => {
+    return (
+      <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight transition-colors cursor-pointer'>
+        <td className='flex items-center gap-4 p-4'>{item.title}</td>
+        <td>{item.class?.name}</td>
+        <td className='hidden md:table-cell'>{new Intl.DateTimeFormat('en-US').format(new Date(item.date))}</td>
+        <td>
+          <div className='flex items-center gap-2'>
+            {role === 'admin' && (
+              <>
+                <FormModal type='update' table='announcement' data={item} />
+                <FormModal type='delete' table='announcement' id={item.id} />
+              </>
+            )}
+          </div>
+        </td>
+      </tr>
+    )
+  }
 
   //URL QUERY PARAMS
 
@@ -96,6 +69,7 @@ const AnnouncementListPage = async ({
             break
       }     
     }
+  }
   }
 
   const [data, count] = await prisma.$transaction([
@@ -147,6 +121,6 @@ const AnnouncementListPage = async ({
     </div>
   )
 }
-}
+
 
 export default AnnouncementListPage
