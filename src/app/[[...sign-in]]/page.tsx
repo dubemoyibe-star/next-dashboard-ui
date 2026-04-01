@@ -3,20 +3,24 @@
 import { SignIn } from "@clerk/nextjs";
 import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Loader } from "lucide-react"
 
 
 const LoginPage = () => {
 
+  const [ loading, setLoading ] = useState(false);
   const { isLoaded , isSignedIn, user } = useUser();
   const router = useRouter();
+  const role = user?.publicMetadata?.role as string | undefined;
 
   useEffect(() => {
-    const role = user?.publicMetadata?.role;
 
     if(role) {
       router.push(`/${role}`);
+      setLoading(true);
+      
     }
   }, [user, router, isLoaded ]);
 
@@ -61,7 +65,13 @@ if (!isLoaded) {
           {/* Clerk SignIn component container */}
           <div className="px-10 pb-10">
             <div className="clerk-signin-wrapper w-full">
-              <SignIn
+              {loading ? (
+                <div className="text-center flex gap-2 items-center justify-center">
+                  <Loader className=" text-gray-500 animate-spin" />
+                  <p>Redirecting to {role}'s page...</p>
+                </div>
+              ) : (
+                <SignIn
                 appearance={{
                   elements: {
                     rootBox: "w-full",
@@ -99,6 +109,7 @@ if (!isLoaded) {
                   },
                 }}
               />
+              )}
             </div>
           </div>
 
