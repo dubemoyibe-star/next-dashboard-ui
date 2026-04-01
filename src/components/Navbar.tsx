@@ -1,26 +1,15 @@
 import { UserButton } from '@clerk/nextjs';
-import { Menu } from 'lucide-react';
+import { currentUser } from '@clerk/nextjs/server';
 import Image from 'next/image'
 import React from 'react'
 
-type NavbarProps = {
-  toggleSidebar?: () => void;
-};
+const Navbar = async () => {
+  const user = await currentUser()
 
-const Navbar = ({ toggleSidebar }: NavbarProps) => {
   return (
     <div className='flex items-center justify-between p-4'>
-      {toggleSidebar && (
-        <button
-          className="lg:hidden pr-4 text-gray-600"
-          onClick={toggleSidebar}
-        >
-          <Menu className='w-5 h-5' />
-        </button>
-      )}
-
       {/*SEARCH BAR */}
-      <div className='hidden text-xs md:flex items-center gap-2  rounded-full ring-[1.5px] ring-gray-300 px-2'>
+      <div className='hidden text-xs md:flex md:ml-12 lg:ml-0 items-center gap-2  rounded-full ring-[1.5px] ring-gray-300 px-2'>
         <label className='sr-only'>Search</label>
         <Image src="/search.png" alt='search' width={14} height={14}/>
         <input placeholder='Search...' className='w-[200px] p-2 bg-transparent outline-none'/>
@@ -37,7 +26,7 @@ const Navbar = ({ toggleSidebar }: NavbarProps) => {
         </div>
         <div className='flex flex-col'>
           <span className='text-xm leading-3 font-medium'>John Doe</span>
-          <span className='text-[10px] text-gray-500 text-right'>Admin</span>
+          <span className='text-[10px] text-gray-500 text-right'>{user?.publicMetadata?.role as string}</span>
         </div>
         {/* <Image src="/avatar.png" alt='avatar' width={36} height={36} className='rounded-full'/> */}
         <UserButton />

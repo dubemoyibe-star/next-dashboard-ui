@@ -1,4 +1,5 @@
-import { currentUser } from "@clerk/nextjs/server";
+"use client";
+
 import Link from "next/link";
 import {
   FaHome,
@@ -135,11 +136,7 @@ const menuItems = [
   },
 ];
 
-
-const Menu = async ({ setSidebarOpen} : { setSidebarOpen? : React.Dispatch<React.SetStateAction<boolean>>}) => {
-
-  const user = await currentUser()
-  const role = user?.publicMetadata.role as string
+const MenuClient = ({ role, setSidebarOpen }: { role: string; setSidebarOpen?: React.Dispatch<React.SetStateAction<boolean>> }) => {
   return (
     <div className="mb-4 text-sm pb-8">
       {menuItems.map(i => (
@@ -161,4 +158,4 @@ const Menu = async ({ setSidebarOpen} : { setSidebarOpen? : React.Dispatch<React
   )
 }
 
-export default Menu
+export default MenuClient
