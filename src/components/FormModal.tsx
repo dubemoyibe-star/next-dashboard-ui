@@ -67,7 +67,7 @@ type FormModalPropsType = {
   table: "teacher" | "student" | "parent" | "subject" | "class" | "lesson" | "exam" | "assignment" | "result" | "attendance" | "event" | "announcement",
   type: "create" | "update" | "delete",
   data?: any,
-  id?: number
+  id?: number | string
 }
 
 const FormModal = ({table, type, data, id} : FormModalPropsType) => {
@@ -101,17 +101,20 @@ const FormModal = ({table, type, data, id} : FormModalPropsType) => {
       <Image src={`/${type}.png`} alt="" height={16} width={16}/>
    </button>
    {open && (
-    <div className='w-screen h-screen absolute left-0 top-0 bg-black bg-opacity-60 z-50 flex items-center justify-center'>
-      <div className='relative bg-white p-4 rounded-md w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]'>
-        <Form />
+    <div className=' w-screen h-screen fixed left-0 top-0 bg-black bg-opacity-60 z-50 flex items-center justify-center'>
+      <div className=' relative bg-white rounded-md w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%] overflow-hidden'>
         <div 
-        className={`absolute top-4 right-4  cursor-pointer`}
-        onClick={() => setOpen(false)}>
-          <X className=' w-6 h-6 text-gray-600 hover:text-red-700'/>
+          className='absolute top-3 right-3 cursor-pointer z-100'
+          onClick={() => setOpen(false)}
+        >
+          <X className='w-6 h-6 text-gray-600 hover:text-red-700'/>
+        </div>
+        <div className='p-4'>
+          <Form />
         </div>
       </div>
     </div>
-   )}
+)}
    </>
   )
 }

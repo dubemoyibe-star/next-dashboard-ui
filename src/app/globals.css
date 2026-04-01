@@ -137,3 +137,229 @@
   margin-bottom: 5px !important;
 }
 
+/* Clerk SignIn Component Custom Styles */
+.clerk-signin-wrapper {
+  width: 100% !important;
+}
+
+.clerk-signin-wrapper .cl-rootBox {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+}
+
+.clerk-signin-wrapper .cl-card {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+}
+
+.clerk-signin-wrapper .cl-rootBox {
+  box-shadow: none !important;
+}
+
+.clerk-signin-wrapper .cl-main {
+  box-shadow: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+}
+
+.clerk-signin-wrapper * {
+  box-shadow: none !important;
+}
+
+/* Remove signup link */
+.clerk-signin-wrapper .cl-footerAction {
+  display: none !important;
+}
+
+/* Fix centering - ensure all elements are properly centered */
+.clerk-signin-wrapper .cl-rootBox {
+  display: flex !important;
+  justify-content: stretch !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.clerk-signin-wrapper .cl-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.clerk-signin-wrapper .cl-main {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.clerk-signin-wrapper .cl-form {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Ensure form field takes full width */
+.clerk-signin-wrapper .cl-formField {
+  width: 100% !important;
+  display: block !important;
+}
+
+/* Ensure form field row takes full width */
+.clerk-signin-wrapper .cl-formFieldRow {
+  width: 100% !important;
+  display: block !important;
+  margin-bottom: 0 !important;
+}
+
+.clerk-signin-wrapper .cl-headerTitle {
+  display: none !important;
+}
+
+.clerk-signin-wrapper .cl-headerSubtitle {
+  display: none !important;
+}
+
+.clerk-signin-wrapper .cl-socialButtonsBlockButton {
+  border: 1px solid #e5e7eb !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.15s ease !important;
+  padding: 0.625rem !important;
+  width: 100% !important;
+}
+
+.clerk-signin-wrapper .cl-socialButtons {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+}
+
+.clerk-signin-wrapper .cl-socialButtonsBlockButton:hover {
+  background-color: #f9fafb !important;
+  border-color: #d1d5db !important;
+}
+
+.clerk-signin-wrapper .cl-formFieldInput {
+  border: 1px solid #d1d5db !important;
+  border-radius: 0.5rem !important;
+  padding: 0.75rem 1rem !important;
+  transition: all 0.15s ease !important;
+  font-size: 0.875rem !important;
+  width: 100% !important;
+  display: block !important;
+  box-sizing: border-box !important;
+}
+
+.clerk-signin-wrapper .cl-formFieldInput:focus {
+  border-color: transparent !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5) !important;
+}
+
+.clerk-signin-wrapper .cl-formButtonPrimary {
+  background-color: #2563eb !important;
+  border-radius: 0.5rem !important;
+  font-weight: 500 !important;
+  padding: 0.75rem 1.5rem !important;
+  transition: background-color 0.15s ease !important;
+  font-size: 0.875rem !important;
+  margin-top: 0 !important;
+  width: 100% !important;
+  display: block !important;
+}
+
+.clerk-signin-wrapper .cl-formButtonPrimary:hover {
+  background-color: #1d4ed8 !important;
+}
+
+.clerk-signin-wrapper .cl-footerActionLink {
+  color: #2563eb !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+}
+
+.clerk-signin-wrapper .cl-footer {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+}
+
+.clerk-signin-wrapper .cl-footerActionLink:hover {
+  color: #1d4ed8 !important;
+}
+
+.clerk-signin-wrapper .cl-dividerRow {
+  margin: 1.25rem 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.clerk-signin-wrapper .cl-dividerLine {
+  background-color: #e5e7eb !important;
+}
+
+.clerk-signin-wrapper .cl-dividerText {
+  color: #9ca3af !important;
+  font-size: 0.875rem !important;
+}
+
+.clerk-signin-wrapper .cl-formFieldLabel {
+  color: #374151 !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  margin-bottom: 0 !important;
+  width: 100% !important;
+}
+
+.clerk-signin-wrapper .cl-formFieldRow {
+  margin-bottom: 0 !important;
+  width: 100% !important;
+  display: block !important;
+}
+
+.clerk-signin-wrapper .cl-form {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+}
+
+.clerk-signin-wrapper .cl-formFieldAction {
+  color: #2563eb !important;
+  font-size: 0.875rem !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.clerk-signin-wrapper .cl-formFieldAction:hover {
+  color: #1d4ed8 !important;
+}
+
+.clerk-signin-wrapper .cl-identityPreview {
+  background-color: #f9fafb !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 0.5rem !important;
+  padding: 0.75rem !important;
+  font-size: 0.875rem !important;
+}
+
+.clerk-signin-wrapper .cl-identityPreviewText {
+  color: #4b5563 !important;
+}
+
+.clerk-signin-wrapper .cl-identityPreviewEditButton {
+  color: #2563eb !important;
+}
+
+.clerk-signin-wrapper .cl-identityPreviewEditButton:hover {
+  color: #1d4ed8 !important;
+}

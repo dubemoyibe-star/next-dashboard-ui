@@ -47,7 +47,7 @@ export default function DashboardLayout({
 
         <X className="w-5 h-5 mr-4 cursor-pointer hover:text-red-500" onClick={() => setSidebarOpen(false)}/>
        </div>
-        <Menu />
+        <Menu setSidebarOpen={setSidebarOpen}/>
       </div>
 
       {/* Mobile overlay background */}
@@ -59,7 +59,7 @@ export default function DashboardLayout({
       )}
 
       {/* Main Content */}
-      <div className="flex-1 bg-[#F7mF8FA] overflow-y-auto flex flex-col relative">
+      <div className="flex-1 bg-gray-50 overflow-y-auto flex flex-col relative">
         <Navbar toggleSidebar={() => setSidebarOpen(true)} />
         {children}
       </div>

@@ -45,10 +45,11 @@ const TeacherForm = ({type, data}: TeacherFormProps) => {
   })
 
   return (
-    <div className=' flex flex-col max-h-[90vh]'>
-      <form className='flex flex-1 overflow-y-auto flex-col gap-8 px-6 py-3 sidebar-scroll' onSubmit={onSubmit}>
+
+      <div className='flex flex-col max-h-[90vh]'>
+        <form className='flex-1 overflow-y-auto flex flex-col gap-8 px-6 py-4 sidebar-scroll' onSubmit={onSubmit}>
       <h1 className='text-xl font-semibold'>Create a new teacher</h1>
-      <span className='text-x text-gray-400 font-medium'>Authentication Information</span>
+      <span className='text-sm text-gray-400 font-medium'>Authentication Information</span>
       <div className='flex justify-between gap-4 flex-wrap'>
         <InputField 
           label="Username" 
@@ -165,7 +166,8 @@ const TeacherForm = ({type, data}: TeacherFormProps) => {
 
       <button className='bg-blue-400 text-white p-2 rounded-md'>{type ==="create" ? "Create" : "Update" }</button>
     </form>
-    </div>
+
+      </div>
   )
 }
 

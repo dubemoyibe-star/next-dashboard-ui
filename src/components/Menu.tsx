@@ -137,7 +137,7 @@ const menuItems = [
 ];
 
 
-const Menu = () => {
+const Menu = ({ setSidebarOpen} : { setSidebarOpen? : React.Dispatch<React.SetStateAction<boolean>>}) => {
   return (
     <div className="mb-4 text-sm pb-8">
       {menuItems.map(i => (
@@ -146,7 +146,7 @@ const Menu = () => {
           {i.items.map((item) => {
             if(item.visible.includes(role)) {
               return (
-                  <Link href={item.href} key={item.label} className=" min-w-[20px] flex items-center justify-start gap-4 text-gray-500 py-2  rounded-md hover:bg-lamaSkyLight transition-colors duration-200 px-2">
+                  <Link onClick={() => setSidebarOpen && setSidebarOpen(prev => !prev)} href={item.href} key={item.label} className=" min-w-[20px] flex items-center justify-start gap-4 text-gray-500 py-2  rounded-md hover:bg-lamaSkyLight transition-colors duration-200 px-2">
                     <item.icon className="w-5 h-5 ml-2"/>
                     <span >{item.label}</span>
                   </Link>

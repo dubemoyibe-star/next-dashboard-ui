@@ -1,3 +1,4 @@
+import { UserButton } from '@clerk/nextjs';
 import { Menu } from 'lucide-react';
 import Image from 'next/image'
 import React from 'react'
@@ -11,7 +12,7 @@ const Navbar = ({ toggleSidebar }: NavbarProps) => {
     <div className='flex items-center justify-between p-4'>
       {toggleSidebar && (
         <button
-          className="lg:hidden mx-2 p-2 text-gray-600"
+          className="lg:hidden pr-4 text-gray-600"
           onClick={toggleSidebar}
         >
           <Menu className='w-5 h-5' />
@@ -38,7 +39,8 @@ const Navbar = ({ toggleSidebar }: NavbarProps) => {
           <span className='text-xm leading-3 font-medium'>John Doe</span>
           <span className='text-[10px] text-gray-500 text-right'>Admin</span>
         </div>
-        <Image src="/avatar.png" alt='avatar' width={36} height={36} className='rounded-full'/>
+        {/* <Image src="/avatar.png" alt='avatar' width={36} height={36} className='rounded-full'/> */}
+        <UserButton />
       </div>
     </div>
   )
