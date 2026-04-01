@@ -1,8 +1,4 @@
-import React from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { ArrowDownWideNarrow, Plus, SlidersHorizontal } from 'lucide-react'
-import { role} from '@/lib/data'
+import { ArrowDownWideNarrow, SlidersHorizontal } from 'lucide-react'
 import Table from '@/components/Table'
 import Pagination from '@/components/Pagination'
 import TableSearch from '@/components/TableSearch'
@@ -10,6 +6,7 @@ import FormModal from '@/components/FormModal'
 import { prisma } from '@/lib/prisma'
 import { Assignment, Class, Prisma, Subject, Teacher } from '@/generated/prisma/client'
 import { ITEM_PER_PAGE } from '@/lib/settings'
+import { currentUserId, role } from '@/lib/utils'
 
 type AssignmentList = Assignment & { 
   lesson: { 
@@ -38,12 +35,12 @@ const columns = [
     accessor: 'dueDate', 
     className: 'hidden md:table-cell'
   },
-  {
-    header: 'Actions', 
-    accessor: 'actions', 
-    
-  },
-  
+  ...(role === "admin" || role === "teacher" ? [
+    {
+      header: 'Actions', 
+      accessor: 'actions', 
+    }
+  ]: []),
 ]
 
 const renderRow = (item : AssignmentList) => {
@@ -56,16 +53,7 @@ return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 t
   <td className='hidden md:table-cell'>{new Intl.DateTimeFormat("en-US").format(item.dueDate)}</td>
   <td>
     <div className='flex items-center gap-2'>
-      {/* <Link href={`/list/student/${item.id}`}>
-      <button className='w-7 h-7 flex items-center justify-center rounded-full bg-lamaSky'>
-        <Image src="/edit.png" alt="" width={16} height={16}/>
-      </button>
-      </Link> */}
-
-      {role === "admin"  && (
-      // <button className='w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple'>
-      //   <Image src="/delete.png" alt="" width={16} height={16}/>
-      // </button>
+      {(role === "admin" || role === "teacher") && (
       <>
         <FormModal type="update" table="assignment" data={item}/>
         <FormModal type="delete" table="assignment" id={item.id}/>
@@ -82,34 +70,27 @@ const AssignmentListPage = async ({
     searchParams: {[key: string]: string} | undefined}
   ) => {
 
-    const {page, ...queryParams} = searchParams || {}
+    const {page, ...queryParams} = await searchParams || {}
     const p = page ? parseInt(page) : 1
 
     //URL QUERY PARAMS
     const query : Prisma.AssignmentWhereInput = {}
+
+    query.lesson = {}
 
     if(queryParams) {
       for(const [key, value] of Object.entries(queryParams)) {
         if(value !== undefined) {
           switch(key) {
             case "classId" :
-              query.lesson = {
-                classId: parseInt(value)
-              }
+              query.lesson.classId = parseInt(value)
               break;
             case "teacherId" :
-              query.lesson = {
-                teacherId: value
-              }
+              query.lesson.teacherId = value
               break;
             case "search" :
-              query.lesson = {
-                subject: {
-                  name: {
-                    contains: value,
-                    mode: "insensitive"
-                  }
-                }
+              query.lesson.subject  = {
+                  name: { contains: value, mode: "insensitive" }
               }
               break;
               default:
@@ -117,6 +98,35 @@ const AssignmentListPage = async ({
           }
         }     
       }
+    }
+
+    //role conditions 
+    switch (role) {
+      case 'admin':
+        break;
+      case 'teacher':
+        query.lesson.teacherId = currentUserId!;
+        break
+      case 'student':
+        query.lesson.class = {
+          students: {
+            some: {
+              id: currentUserId!
+            }
+          }
+        }
+        break
+        case 'student':
+        query.lesson.class = {
+          students: {
+            some: {
+              parentId: currentUserId!
+            }
+          }
+        }
+        break
+      default:
+        break;
     }
 
     const [data, count] = await prisma.$transaction([
@@ -139,7 +149,7 @@ const AssignmentListPage = async ({
       })
     ])
 
-    // console.log(data)
+  
 
 
   return (
@@ -156,10 +166,7 @@ const AssignmentListPage = async ({
             <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
               <ArrowDownWideNarrow className='w-4 h-4'/>
             </button>
-            {role === "admin" && 
-              // <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
-              //   <Plus className='w-4 h-4'/>
-              // </button>
+            {(role === "admin" || role === "teacher") && 
               <FormModal type="create" table="assignment" />
             }
           </div>

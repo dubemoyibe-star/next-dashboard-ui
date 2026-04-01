@@ -6,7 +6,7 @@ import FormModal from '@/components/FormModal'
 import { prisma } from '@/lib/prisma'
 import { ITEM_PER_PAGE } from '@/lib/settings'
 import { Announcement, Class, Prisma } from '@/generated/prisma/client'
-import { auth } from '@clerk/nextjs/server'
+import { role } from '@/lib/utils'
 
 type AnnouncementList = Announcement & {
   class: Class
@@ -18,11 +18,8 @@ const AnnouncementListPage = async ({
   searchParams: {[key: string]: string} | undefined}
 ) => {
 
-  const {page, ...queryParams} = searchParams || {}
+  const {page, ...queryParams} =  await searchParams || {}
   const p = page ? parseInt(page) : 1
-
-  const { sessionClaims } = await auth()
-  const role = (sessionClaims?.metadata as {role?: string})?.role
 
   const columns = [
     { header: 'Title', accessor: 'title' },
