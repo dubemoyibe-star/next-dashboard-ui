@@ -1,8 +1,4 @@
-import React from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { ArrowDownWideNarrow, Plus, SlidersHorizontal } from 'lucide-react'
-import { eventsData, role} from '@/lib/data'
+import { ArrowDownWideNarrow,  SlidersHorizontal } from 'lucide-react'
 import Table from '@/components/Table'
 import Pagination from '@/components/Pagination'
 import TableSearch from '@/components/TableSearch'
@@ -10,7 +6,7 @@ import FormModal from '@/components/FormModal'
 import { ITEM_PER_PAGE } from '@/lib/settings'
 import { prisma } from '@/lib/prisma'
 import { Class, Event, Prisma } from '@/generated/prisma/client'
-import { fa } from 'zod/locales'
+import { currentUserId, role } from '@/lib/utils'
 
 type EventList = Event & {
   class: Class
@@ -41,11 +37,12 @@ const columns = [
     accessor: 'endTime', 
     className: 'hidden md:table-cell'
   },
-  {
-    header: 'Actions', 
-    accessor: 'actions', 
-    
-  },
+  ...(role === "admin" ? [
+    {
+      header: 'Actions', 
+      accessor: 'actions', 
+    }
+  ] : []),
 
 ]
 
@@ -54,7 +51,7 @@ return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 t
   <td className='flex items-center gap-4 p-4'>
    {item.title}
   </td>
-  <td>{item.class.name}</td>
+  <td>{item.class?.name || "-"}</td>
   <td className='hidden md:table-cell'>{new Intl.DateTimeFormat("en-US").format(item.startTime)}</td>
   <td className='hidden md:table-cell'>
       {item.startTime.toLocaleTimeString("en-US", {
@@ -72,16 +69,7 @@ return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 t
   </td>
   <td>
     <div className='flex items-center gap-2'>
-      {/* <Link href={`/list/student/${item.id}`}>
-      <button className='w-7 h-7 flex items-center justify-center rounded-full bg-lamaSky'>
-        <Image src="/edit.png" alt="" width={16} height={16}/>
-      </button>
-      </Link> */}
-
       {role === "admin"  && (
-      // <button className='w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple'>
-      //   <Image src="/delete.png" alt="" width={16} height={16}/>
-      // </button>
       <>
         <FormModal type="update" table="event" data={item}/>
         <FormModal type="delete" table="event" id={item.id}/>
@@ -98,7 +86,7 @@ const EventListPage = async ({
   searchParams: {[key: string]: string} | undefined}
 ) => {
 
-  const {page, ...queryParams} = searchParams || {}
+  const {page, ...queryParams} = await searchParams || {}
   const p = page ? parseInt(page) : 1
 
   //URL QUERY PARAMS
@@ -120,6 +108,18 @@ const EventListPage = async ({
       }     
     }
   }
+
+  //role condition
+
+  const roleConditions = {
+    teacher: { lessons: { some: { teacherId: currentUserId! } } },
+    student: { students: { some: { id: currentUserId! } } },
+    parent: { students: { some: { parentId: currentUserId! } } },
+  }
+
+  query.OR = [{classId: null}, {
+    class: roleConditions[role as keyof typeof roleConditions] || {}
+  }]
 
   const [data, count] = await prisma.$transaction([
     prisma.event.findMany({
@@ -153,9 +153,6 @@ const EventListPage = async ({
               <ArrowDownWideNarrow className='w-4 h-4'/>
             </button>
             {role === "admin" && 
-            // <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
-            //   <Plus className='w-4 h-4'/>
-            // </button>
              <FormModal type="create" table="event" />
             }
           </div>
