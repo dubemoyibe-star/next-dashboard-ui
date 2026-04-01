@@ -1,15 +1,12 @@
-import React from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { ArrowDownWideNarrow, Plus, SlidersHorizontal } from 'lucide-react'
-import { role} from '@/lib/data'
+import { ArrowDownWideNarrow, SlidersHorizontal } from 'lucide-react'
 import Table from '@/components/Table'
 import Pagination from '@/components/Pagination'
 import TableSearch from '@/components/TableSearch'
 import FormModal from '@/components/FormModal'
-import { Class, Grade, Prisma, Teacher } from '@/generated/prisma/client'
+import { Class, Prisma, Teacher } from '@/generated/prisma/client'
 import { prisma } from '@/lib/prisma'
 import { ITEM_PER_PAGE } from '@/lib/settings'
+import { role } from '@/lib/utils'
 
 type ClassList = Class & {supervisor: Teacher }
 
@@ -34,11 +31,12 @@ const columns = [
     accessor: 'supervisor', 
     className: 'hidden md:table-cell'
   },
-  {
-    header: 'Actions', 
-    accessor: 'actions', 
-    
-  },
+  ...(role === "admin" ? [
+    {
+      header: 'Actions', 
+      accessor: 'actions', 
+    }
+  ] : []),
 
 ]
 
@@ -52,16 +50,7 @@ return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 t
   <td className='hidden md:table-cell'>{item.supervisor.name + " " + item.supervisor.surname}</td>
   <td>
     <div className='flex items-center gap-2'>
-      {/* <Link href={`/list/student/${item.id}`}>
-      <button className='w-7 h-7 flex items-center justify-center rounded-full bg-lamaSky'>
-        <Image src="/edit.png" alt="" width={16} height={16}/>
-      </button>
-      </Link> */}
-
       {role === "admin"  && (
-      // <button className='w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple'>
-      //   <Image src="/delete.png" alt="" width={16} height={16}/>
-      // </button>
       <>
         <FormModal type="update" table="class" data={item}/>
         <FormModal type="delete" table="class" id={item.id}/>
@@ -137,9 +126,6 @@ const ClassListPage = async ({
               <ArrowDownWideNarrow className='w-4 h-4'/>
             </button>
             {role === "admin" && 
-            // <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
-            //   <Plus className='w-4 h-4'/>
-            // </button>
             <FormModal type="create" table="class" />
             }
           </div>
