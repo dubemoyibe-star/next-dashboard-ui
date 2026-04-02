@@ -26,11 +26,29 @@ const LoginPage = () => {
 
 if (!isLoaded) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="animate-pulse space-y-4">
-        <div className="h-10 w-40 bg-gray-200 rounded mx-auto" />
-        <div className="h-4 w-64 bg-gray-200 rounded mx-auto" />
-        <div className="h-10 w-64 bg-gray-200 rounded mx-auto" />
+    <div className="mt-20 w-full max-w-md mx-auto animate-pulse">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        
+        {/* Header */}
+        <div className="px-10 pt-12 pb-8 text-center space-y-4">
+          <div className="w-16 h-16 bg-gray-200 rounded-2xl mx-auto" />
+          <div className="h-6 w-40 bg-gray-200 rounded mx-auto" />
+          <div className="h-4 w-56 bg-gray-200 rounded mx-auto" />
+        </div>
+
+        {/* Form */}
+        <div className="px-10 pb-10 space-y-4">
+          <div className="h-10 w-full bg-gray-200 rounded-lg" />
+          <div className="h-10 w-full bg-gray-200 rounded-lg" />
+          <div className="h-10 w-full bg-gray-200 rounded-lg" />
+          <div className="h-10 w-full bg-gray-300 rounded-lg mt-2" />
+        </div>
+
+        {/* Footer */}
+        <div className="px-10 pb-8 pt-6 border-t border-gray-100">
+          <div className="h-3 w-48 bg-gray-200 rounded mx-auto" />
+        </div>
+
       </div>
     </div>
   );

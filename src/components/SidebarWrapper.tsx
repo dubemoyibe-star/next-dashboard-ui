@@ -55,7 +55,7 @@ export default function SidebarWrapper({ role }: { role: string }) {
 
       {/* Mobile Menu Button */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-30 p-2"
+        className="lg:hidden fixed top-4 left-4 z-30 p-2 bg-gray-200 rounded-md shadow-sm hover:shadow-md hover:bg-gray-300 transition-colors duration-200"
         onClick={() => setSidebarOpen(true)}
       >
         <MenuIcon className="w-5 h-5 text-gray-600" />
