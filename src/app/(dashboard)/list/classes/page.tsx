@@ -24,7 +24,6 @@ const columns = [
   {
     header: 'Grade', 
     accessor: 'grade', 
-    className: 'hidden md:table-cell'
   },
   {
     header: 'Supervisor', 
@@ -46,7 +45,7 @@ return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 t
    {item.name}
   </td>
   <td className='hidden md:table-cell'>{item.capacity }</td>
-  <td className='hidden md:table-cell'>{item.name[0]}</td>
+  <td >{item.name[0]}</td>
   <td className='hidden md:table-cell'>{item.supervisor.name + " " + item.supervisor.surname}</td>
   <td>
     <div className='flex items-center gap-2'>
@@ -68,7 +67,7 @@ const ClassListPage = async ({
     searchParams: {[key: string]: string} | undefined}
   ) => {
 
-    const {page, ...queryParams} = searchParams || {}
+    const {page, ...queryParams} = await searchParams || {}
     const p = page ? parseInt(page) : 1
 
     //URL QUERY PARAMS

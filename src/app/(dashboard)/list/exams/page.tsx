@@ -74,7 +74,7 @@ const ExamsListPage = async ({
     searchParams: {[key: string]: string} | undefined}
   ) => {
 
-    const {page, ...queryParams} = searchParams || {}
+    const {page, ...queryParams} = await searchParams || {}
     const p = page ? parseInt(page) : 1
 
     //URL QUERY PARAMS
@@ -173,7 +173,7 @@ const ExamsListPage = async ({
             <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
               <ArrowDownWideNarrow className='w-4 h-4'/>
             </button>
-            {role === "admin" && 
+            {(role === "admin" || role === "teacher")&& 
               <FormModal type="create" table="exam" />
             }
           </div>
