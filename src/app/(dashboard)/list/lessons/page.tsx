@@ -1,8 +1,4 @@
-import React from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { ArrowDownWideNarrow, Plus, SlidersHorizontal } from 'lucide-react'
-import { role} from '@/lib/data'
+import { ArrowDownWideNarrow, SlidersHorizontal } from 'lucide-react'
 import Table from '@/components/Table'
 import Pagination from '@/components/Pagination'
 import TableSearch from '@/components/TableSearch'
@@ -10,6 +6,7 @@ import FormModal from '@/components/FormModal'
 import { Class, Lesson, Prisma, Subject, Teacher } from '@/generated/prisma/client'
 import { prisma } from '@/lib/prisma'
 import { ITEM_PER_PAGE } from '@/lib/settings'
+import { role } from '@/lib/utils'
 
 type LessonList = Lesson & { teacher: Teacher } & {class: Class} & {subject: Subject}
 
@@ -28,11 +25,11 @@ const columns = [
     accessor: 'teacher', 
     className: 'hidden md:table-cell'
   },
-  {
+  ...(role === "admin" ? [{
     header: 'Actions', 
     accessor: 'actions', 
     
-  },
+  }] : []),
 
 ]
 
@@ -46,16 +43,7 @@ return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 t
 
   <td>
     <div className='flex items-center gap-2'>
-      {/* <Link href={`/list/student/${item.id}`}>
-      <button className='w-7 h-7 flex items-center justify-center rounded-full bg-lamaSky'>
-        <Image src="/edit.png" alt="" width={16} height={16}/>
-      </button>
-      </Link> */}
-
       {role === "admin"  && (
-      // <button className='w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple'>
-      //   <Image src="/delete.png" alt="" width={16} height={16}/>
-      // </button>
       <>
         <FormModal type="update" table="lesson" data={item}/>
         <FormModal type="delete" table="lesson" id={item.id}/>
@@ -137,9 +125,6 @@ const LessonsListPage = async ({
               <ArrowDownWideNarrow className='w-4 h-4'/>
             </button>
             {role === "admin" && 
-              // <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
-              //   <Plus className='w-4 h-4'/>
-              // </button>
               <FormModal type="create" table="lesson" />
             }
           </div>
