@@ -1,7 +1,6 @@
 import CountChart from '@/components/CountChart'
 import UserCard from '@/components/UserCard'
 import AttendanceChart from '@/components/AttendanceChart'
-import React from 'react'
 import FinanceChart from '@/components/FinanceChart'
 import EventCalendar from '@/components/EventCalendar'
 import Announcements from '@/components/Announcements'
@@ -15,7 +14,7 @@ const AdminPage = () => {
           <UserCard type='student'/>
           <UserCard type='teacher'/>
           <UserCard type='parent'/>
-          <UserCard type='staff'/>
+          <UserCard type='admin'/>
         </div>
 
         {/*MIDDLE CHART */}

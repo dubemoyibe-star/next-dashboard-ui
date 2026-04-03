@@ -1,8 +1,6 @@
-import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowDownWideNarrow, SlidersHorizontal } from 'lucide-react'
-import { role } from '@/lib/data'
 import Table from '@/components/Table'
 import Pagination from '@/components/Pagination'
 import TableSearch from '@/components/TableSearch'
@@ -10,6 +8,7 @@ import FormModal from '@/components/FormModal'
 import { Class, Prisma, Student } from '@/generated/prisma/client'
 import { prisma } from '@/lib/prisma'
 import { ITEM_PER_PAGE } from '@/lib/settings'
+import { role } from '@/lib/utils'
 
 type StudentList = Student & {class: Class}
 
@@ -38,11 +37,11 @@ const columns = [
     accessor: 'address', 
     className: 'hidden lg:table-cell'
   },
-  {
+  ...(role === "admin" ? [{
     header: 'Actions', 
     accessor: 'actions', 
     
-  },
+  }] : []),
 
 ]
 
@@ -73,9 +72,6 @@ return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 t
       </Link>
 
       {role === "admin"  && (
-      // <button className='w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple'>
-      //   <Image src="/delete.png" alt="" width={16} height={16}/>
-      // </button>
       <FormModal type="delete" table="student" id={item.id}/>
     )}
     </div>
@@ -89,7 +85,7 @@ const StudentsListPage = async ({
     searchParams: {[key: string]: string} | undefined}
   ) => {
 
-    const {page, ...queryParams} = searchParams || {}
+    const {page, ...queryParams} = await searchParams || {}
     const p = page ? parseInt(page) : 1
 
     //URL QUERY PARAMS
@@ -153,9 +149,6 @@ const StudentsListPage = async ({
               <ArrowDownWideNarrow className='w-4 h-4'/>
             </button>
             {role === "admin" && 
-            // <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
-            //   <Plus className='w-4 h-4'/>
-            // </button>
             <FormModal type="create" table="student"/>
             }
           </div>

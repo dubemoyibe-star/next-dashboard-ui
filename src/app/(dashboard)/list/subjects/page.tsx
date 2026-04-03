@@ -1,8 +1,5 @@
-import React from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { ArrowDownWideNarrow, Plus, SlidersHorizontal } from 'lucide-react'
-import { role } from '@/lib/data'
+import { ArrowDownWideNarrow,  SlidersHorizontal } from 'lucide-react'
+import { role } from '@/lib/utils'
 import Table from '@/components/Table'
 import Pagination from '@/components/Pagination'
 import TableSearch from '@/components/TableSearch'
@@ -44,16 +41,7 @@ return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 t
   </td>
   <td>
     <div className='flex items-center gap-2'>
-      {/* <Link href={`/list/student/${item.id}`}>
-      <button className='w-7 h-7 flex items-center justify-center rounded-full bg-lamaSky'>
-        <Image src="/edit.png" alt="" width={16} height={16}/>
-      </button>
-      </Link> */}
-
       {role === "admin"  && (
-        // <button className='w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple'>
-        //   <Image src="/delete.png" alt="" width={16} height={16}/>
-        // </button>
         <>
           <FormModal type="update" table="subject" data={item}/>
           <FormModal type="delete" table="subject" id={item.id}/>
@@ -70,7 +58,7 @@ const SubjectsListPage = async ({
     searchParams: {[key: string]: string} | undefined }
   ) => {
 
-    const {page, ...queryParams} = searchParams || {}
+    const {page, ...queryParams} = await searchParams || {}
     const p = page ? parseInt(page) : 1
 
     //URL QUERY PARAMS
