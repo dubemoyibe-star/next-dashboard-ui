@@ -1,9 +1,59 @@
+import { prisma } from '@/lib/prisma';
 import { UserButton } from '@clerk/nextjs';
 import { currentUser } from '@clerk/nextjs/server';
-import Image from 'next/image'
+import Image from 'next/image';
+import Link from 'next/link';
 
 const Navbar = async () => {
-  const user = await currentUser()
+  const user = await currentUser();
+  const role = user?.publicMetadata?.role as string;
+  const userId = user?.id;
+
+  let count = 0;
+
+  if (user) {
+    const roleConditions = {
+      teacher: {
+        class: {
+          lessons: {
+            some: {
+              teacherId: userId!,
+            },
+          },
+        },
+      },
+      student: {
+        class: {
+          students: {
+            some: {
+              id: userId!,
+            },
+          },
+        },
+      },
+      parent: {
+        class: {
+          students: {
+            some: {
+              parentId: userId!,
+            },
+          },
+        },
+      },
+    };
+
+    count = await prisma.announcement.count({
+      where:
+        role === 'admin'
+          ? {} // admin sees all
+          : {
+              OR: [
+                { classId: null }, // global announcements (IMPORTANT)
+                roleConditions[role as keyof typeof roleConditions],
+              ],
+            },
+    });
+  }
 
   return (
     <div className='flex items-center justify-between p-4'>
@@ -19,19 +69,27 @@ const Navbar = async () => {
         <div className='bg-white rounded-full w-7 h-7 flex items-center justify-center cursor-pointer'>
           <Image src="/message.png" alt='message' width={20} height={20}/>
         </div>
+
+       <Link href="/list/announcements">
         <div className='relative bg-white rounded-full w-7 h-7 flex items-center justify-center cursor-pointer'>
-          <Image src="/announcement.png" alt='message' width={20} height={20}/>
-          <div className='rounded-full absolute -top-3 -right-3 w-5 h-5 flex items-center justify-center text-white bg-purple-500 text-xs'>1</div>
+          <Image src="/announcement.png" alt='announcement' width={20} height={20}/>
+          {count > 0 && <div className='rounded-full absolute -top-3 -right-3 w-5 h-5 flex items-center justify-center text-white bg-purple-500 text-xs'>
+            {count}
+          </div>}
         </div>
+       </Link>
+
         <div className='flex flex-col'>
-          <span className='text-xm leading-3 font-medium'>John Doe</span>
-          <span className='text-[10px] text-gray-500 text-right'>{user?.publicMetadata?.role as string}</span>
+          <span className='text-xm leading-3 font-medium'>{user?.username}</span>
+          <span className='text-[10px] text-gray-500 text-right'>
+            {role}
+          </span>
         </div>
-        {/* <Image src="/avatar.png" alt='avatar' width={36} height={36} className='rounded-full'/> */}
+
         <UserButton />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

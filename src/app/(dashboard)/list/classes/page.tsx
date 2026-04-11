@@ -7,58 +7,12 @@ import { Class, Prisma, Teacher } from '@/generated/prisma/client'
 import { prisma } from '@/lib/prisma'
 import { ITEM_PER_PAGE } from '@/lib/settings'
 import { role } from '@/lib/utils'
+import FormContainer from '@/components/FormContainer'
 
 type ClassList = Class & {supervisor: Teacher }
 
 
-const columns = [
-  {
-    header: 'Class Name', 
-    accessor: 'name'
-  },
-  {
-    header: 'Capacity', 
-    accessor: 'capacity', 
-    className: 'hidden md:table-cell'
-  },
-  {
-    header: 'Grade', 
-    accessor: 'grade', 
-  },
-  {
-    header: 'Supervisor', 
-    accessor: 'supervisor', 
-    className: 'hidden md:table-cell'
-  },
-  ...(role === "admin" ? [
-    {
-      header: 'Actions', 
-      accessor: 'actions', 
-    }
-  ] : []),
 
-]
-
-const renderRow = (item : ClassList) => {
-return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight transition-colors cursor-pointer'>
-  <td className='flex items-center gap-4 p-4'>
-   {item.name}
-  </td>
-  <td className='hidden md:table-cell'>{item.capacity }</td>
-  <td >{item.name[0]}</td>
-  <td className='hidden md:table-cell'>{item.supervisor.name + " " + item.supervisor.surname}</td>
-  <td>
-    <div className='flex items-center gap-2'>
-      {role === "admin"  && (
-      <>
-        <FormModal type="update" table="class" data={item}/>
-        <FormModal type="delete" table="class" id={item.id}/>
-      </>
-    )}
-    </div>
-  </td>
-</tr>
-}
 
 
 const ClassListPage = async ({
@@ -66,7 +20,7 @@ const ClassListPage = async ({
   }: {
     searchParams: {[key: string]: string} | undefined}
   ) => {
-
+    const userRole = await role()
     const {page, ...queryParams} = await searchParams || {}
     const p = page ? parseInt(page) : 1
 
@@ -109,6 +63,55 @@ const ClassListPage = async ({
 
     // console.log(data)
 
+    const columns = [
+  {
+    header: 'Class Name', 
+    accessor: 'name'
+  },
+  {
+    header: 'Capacity', 
+    accessor: 'capacity', 
+    className: 'hidden md:table-cell'
+  },
+  {
+    header: 'Grade', 
+    accessor: 'grade', 
+  },
+  {
+    header: 'Supervisor', 
+    accessor: 'supervisor', 
+    className: 'hidden md:table-cell'
+  },
+  ...(userRole === "admin" ? [
+    {
+      header: 'Actions', 
+      accessor: 'actions', 
+    }
+  ] : []),
+
+]
+
+const renderRow = (item : ClassList) => {
+return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight transition-colors cursor-pointer'>
+  <td className='flex items-center gap-4 p-4'>
+   {item.name}
+  </td>
+  <td className='hidden md:table-cell'>{item.capacity }</td>
+  <td >{item.gradeId}</td>
+  <td className='hidden md:table-cell'>{item.supervisor.name + " " + item.supervisor.surname}</td>
+  <td>
+    <div className='flex items-center gap-2'>
+      {userRole === "admin"  && (
+      <>
+        <FormContainer type="update" table="class" data={item}/>
+        <FormContainer type="delete" table="class" id={item.id}/>
+      </>
+    )}
+    </div>
+  </td>
+</tr>
+}
+
 
   return (
     <div className='bg-white p-4 rounded-md flex-1 m-4 mt-0 '>
@@ -124,8 +127,8 @@ const ClassListPage = async ({
             <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
               <ArrowDownWideNarrow className='w-4 h-4'/>
             </button>
-            {role === "admin" && 
-            <FormModal type="create" table="class" />
+            {userRole === "admin" && 
+            <FormContainer type="create" table="class" />
             }
           </div>
         </div>

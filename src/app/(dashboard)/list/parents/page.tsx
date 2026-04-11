@@ -2,7 +2,7 @@ import { ArrowDownWideNarrow, SlidersHorizontal } from 'lucide-react'
 import Table from '@/components/Table'
 import Pagination from '@/components/Pagination'
 import TableSearch from '@/components/TableSearch'
-import FormModal from '@/components/FormModal'
+import FormContainer from '@/components/FormContainer'
 import { Parent, Prisma, Student } from '@/generated/prisma/client'
 import { ITEM_PER_PAGE } from '@/lib/settings'
 import { prisma } from '@/lib/prisma'
@@ -10,65 +10,14 @@ import { role } from '@/lib/utils'
 
 type ParentList = Parent & {students: Student[]}
 
-const columns = [
-  {
-    header: 'Info', 
-    accessor: 'info'
-  },
-  {
-    header: 'Student Names', 
-    accessor: 'students', 
-    className: 'hidden md:table-cell'
-  },
-  {
-    header: 'Phone', 
-    accessor: 'phone', 
-  },
-  {
-    header: 'Address', 
-    accessor: 'address', 
-    className: 'hidden lg:table-cell'
-  },
-  ...(role === "admin" ? [{
-    header: 'Actions', 
-    accessor: 'actions', 
-    
-  }] : []),
 
-]
-
-const renderRow = (item : ParentList) => {
-return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight transition-colors cursor-pointer'>
-  <td className='flex items-center gap-4 p-4'>
-    <div className='flex flex-col'>
-      <h3 className='font-semibold'>{item.name}</h3>
-      <p className='text-xs text-gray-500'>{item?.email}</p>
-    </div>
-  </td>
-  <td className='hidden md:table-cell'>{item.students.map(student => student.name).join(", ")}</td>
-  <td >{item.phone}</td>
-  <td className='hidden lg:table-cell'>{item.address}</td>
-  <td>
-    <div className='flex items-center gap-2'>
-      
-
-      {role === "admin"  && (
-        <>
-          <FormModal type="update" table="parent" data={item}/>
-          <FormModal type="delete" table="parent" id={item.id}/>
-        </>
-    )}
-    </div>
-  </td>
-</tr>
-}
 
 const ParentsListPage = async ({
     searchParams
   }: {
     searchParams: {[key: string]: string} | undefined }
   ) => {
-
+    const userRole = await role()
     const {page, ...queryParams} = await searchParams || {}
     const p = page ? parseInt(page) : 1
 
@@ -109,6 +58,59 @@ const ParentsListPage = async ({
 
     // console.log(data)
 
+    const columns = [
+  {
+    header: 'Info', 
+    accessor: 'info'
+  },
+  {
+    header: 'Student Names', 
+    accessor: 'students', 
+    className: 'hidden md:table-cell'
+  },
+  {
+    header: 'Phone', 
+    accessor: 'phone', 
+  },
+  {
+    header: 'Address', 
+    accessor: 'address', 
+    className: 'hidden lg:table-cell'
+  },
+  ...(userRole === "admin" ? [{
+    header: 'Actions', 
+    accessor: 'actions', 
+    
+  }] : []),
+
+]
+
+const renderRow = (item : ParentList) => {
+return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight transition-colors cursor-pointer'>
+  <td className='flex items-center gap-4 p-4'>
+    <div className='flex flex-col'>
+      <h3 className='font-semibold'>{item.name}</h3>
+      <p className='text-xs text-gray-500'>{item?.email}</p>
+    </div>
+  </td>
+  <td className='hidden md:table-cell'>{item.students.map(student => student.name).join(", ")}</td>
+  <td >{item.phone}</td>
+  <td className='hidden lg:table-cell'>{item.address}</td>
+  <td>
+    <div className='flex items-center gap-2'>
+      
+
+      {userRole === "admin"  && (
+        <>
+          <FormContainer type="update" table="parent" data={{...item, students: item.students.map((s: any) => s.id)}}/>
+          <FormContainer type="delete" table="parent" id={item.id}/>
+        </>
+    )}
+    </div>
+  </td>
+</tr>
+}
+
 
   return (
     <div className='bg-white p-4 rounded-md flex-1 m-4 mt-0 '> 
@@ -124,8 +126,8 @@ const ParentsListPage = async ({
             <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
               <ArrowDownWideNarrow className='w-4 h-4'/>
             </button>
-            {role === "admin" && 
-              <FormModal type="create" table="parent" />
+            {userRole === "admin" && 
+              <FormContainer type="create" table="parent" />
             }
           </div>
         </div>

@@ -2,12 +2,11 @@ import { ArrowDownWideNarrow, SlidersHorizontal } from 'lucide-react'
 import Table from '@/components/Table'
 import Pagination from '@/components/Pagination'
 import TableSearch from '@/components/TableSearch'
-import FormModal from '@/components/FormModal'
+import FormContainer from '@/components/FormContainer'
 import { prisma } from '@/lib/prisma'
 import { ITEM_PER_PAGE } from '@/lib/settings'
 import { Class, Exam, Prisma, Subject, Teacher } from '@/generated/prisma/client'
 import { currentUserId, role } from '@/lib/utils'
-import { parse } from 'path'
 
 type ExamList = Exam & { 
   lesson: { 
@@ -18,62 +17,13 @@ type ExamList = Exam & {
 }
 
 
-const columns = [
-  {
-    header: 'Subject Name', 
-    accessor: 'name'
-  },
-  {
-    header: 'Class', 
-    accessor: 'class', 
-  },
-  {
-    header: 'Teacher', 
-    accessor: 'teacher', 
-    className: 'hidden md:table-cell'
-  },
-  {
-    header: 'Date', 
-    accessor: 'date', 
-    className: 'hidden md:table-cell'
-  },
-  ...(role === "admin" || role === "teacher" ? [{
-    header: 'Actions', 
-    accessor: 'actions', 
-    
-  }] : []),
-
-]
-
-const renderRow = (item : ExamList) => {
-return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight transition-colors cursor-pointer'>
-  <td className='flex items-center gap-4 p-4'>
-   {item.lesson.subject.name}
-  </td>
-  <td>{item.lesson.class.name}</td>
-  <td className='hidden md:table-cell'>{item.lesson.teacher.name + " " + item.lesson.teacher.surname}</td>
-  <td className='hidden md:table-cell'>
-    {new Intl.DateTimeFormat("en-US").format(item.startTime)}
-  </td>
-  <td>
-    <div className='flex items-center gap-2'>
-      {(role === "admin" || role === "teacher" )&& (
-        <>
-          <FormModal type="update" table="exam" data={item}/>
-          <FormModal type="delete" table="exam" id={item.id}/>
-        </>
-    )}
-    </div>
-  </td>
-</tr>
-}
-
 const ExamsListPage = async ({
     searchParams
   }: {
     searchParams: {[key: string]: string} | undefined}
   ) => {
-
+    const userRole = await role()
+    const userId = await currentUserId()
     const {page, ...queryParams} = await searchParams || {}
     const p = page ? parseInt(page) : 1
 
@@ -108,17 +58,17 @@ const ExamsListPage = async ({
 
     //role conditions
 
-    switch (role) {
+    switch (userRole) {
       case "admin":
         break;
       case "teacher":
-        query.lesson.teacherId = currentUserId!;
+        query.lesson.teacherId = userId!;
         break;
       case "student":
         query.lesson.class = {
           students: {
             some: {
-              id: currentUserId!
+              id: userId!
             }
           }
         }
@@ -127,7 +77,7 @@ const ExamsListPage = async ({
         query.lesson.class = {
           students: {
             some: {
-              parentId: currentUserId!
+              parentId: userId!
             }
           }
         }
@@ -158,6 +108,58 @@ const ExamsListPage = async ({
 
     // console.log(data)
 
+    
+
+const columns = [
+  {
+    header: 'Subject Name', 
+    accessor: 'name'
+  },
+  {
+    header: 'Class', 
+    accessor: 'class', 
+  },
+  {
+    header: 'Teacher', 
+    accessor: 'teacher', 
+    className: 'hidden md:table-cell'
+  },
+  {
+    header: 'Date', 
+    accessor: 'date', 
+    className: 'hidden md:table-cell'
+  },
+  ...(userRole === "admin" || userRole === "teacher" ? [{
+    header: 'Actions', 
+    accessor: 'actions', 
+    
+  }] : []),
+
+]
+
+const renderRow = (item : ExamList) => {
+return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight transition-colors cursor-pointer'>
+  <td className='flex items-center gap-4 p-4'>
+   {item.lesson.subject.name}
+  </td>
+  <td>{item.lesson.class.name}</td>
+  <td className='hidden md:table-cell'>{item.lesson.teacher.name + " " + item.lesson.teacher.surname}</td>
+  <td className='hidden md:table-cell'>
+    {new Intl.DateTimeFormat("en-US").format(item.startTime)}
+  </td>
+  <td>
+    <div className='flex items-center gap-2'>
+      {(userRole === "admin" || userRole === "teacher" )&& (
+        <>
+          <FormContainer type="update" table="exam" data={item}/>
+          <FormContainer type="delete" table="exam" id={item.id}/>
+        </>
+    )}
+    </div>
+  </td>
+</tr>
+}
+
 
   return (
     <div className='bg-white p-4 rounded-md flex-1 m-4 mt-0 '>
@@ -173,8 +175,8 @@ const ExamsListPage = async ({
             <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
               <ArrowDownWideNarrow className='w-4 h-4'/>
             </button>
-            {(role === "admin" || role === "teacher")&& 
-              <FormModal type="create" table="exam" />
+            {(userRole === "admin" || userRole === "teacher")&& 
+              <FormContainer type="create" table="exam" />
             }
           </div>
         </div>

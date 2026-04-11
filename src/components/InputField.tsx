@@ -9,7 +9,9 @@ type inputPropsType = {
   name: string;
   defaultValue?: string;
   error?: FieldError;
+  hidden?: boolean
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
+  textarea?: boolean
 };
 
 const InputField = ({
@@ -19,25 +21,37 @@ const InputField = ({
   name,
   defaultValue,
   error,
+  hidden,
   inputProps,
+  textarea
 }: inputPropsType) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const isPassword = type === "password";
 
   return (
-    <div className="relative flex flex-col gap-2 w-full md:w-1/4">
+    <div className={hidden ? "hidden" : "relative flex flex-col gap-2 w-full md:w-1/4" }>
       <label className="text-xs text-gray-500" htmlFor={name}>{label}</label>
 
       <div className="relative w-full">
-        <input
-          id={name}
-          type={isPassword ? (showPassword ? "text" : "password") : type}
-          {...register(name)}
-          className="ring-[1.5px] ring-gray-300 p-2 pr-10 rounded-md text-sm w-full"
-          {...inputProps}
-          defaultValue={defaultValue}
-        />
+       {textarea ? (
+          <textarea
+            id={name}
+            {...register(name)}
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            defaultValue={defaultValue}
+            {...inputProps}
+          />
+        ) : (
+          <input
+            id={name}
+            type={isPassword ? (showPassword ? "text" : "password") : type}
+            {...register(name)}
+            className="ring-[1.5px] ring-gray-300 p-2 pr-10 rounded-md text-sm w-full"
+            defaultValue={defaultValue}
+            {...inputProps}
+          />
+        )}
 
         {isPassword && (
           <button

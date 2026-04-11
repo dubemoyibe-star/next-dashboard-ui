@@ -2,11 +2,11 @@ import { ArrowDownWideNarrow, SlidersHorizontal } from 'lucide-react'
 import Table from '@/components/Table'
 import Pagination from '@/components/Pagination'
 import TableSearch from '@/components/TableSearch'
-import FormModal from '@/components/FormModal'
 import { prisma } from '@/lib/prisma'
 import { Assignment, Class, Prisma, Subject, Teacher } from '@/generated/prisma/client'
 import { ITEM_PER_PAGE } from '@/lib/settings'
 import { currentUserId, role } from '@/lib/utils'
+import FormContainer from '@/components/FormContainer'
 
 type AssignmentList = Assignment & { 
   lesson: { 
@@ -16,53 +16,6 @@ type AssignmentList = Assignment & {
   }
 }
 
-const columns = [
-  {
-    header: 'Subject Name', 
-    accessor: 'name'
-  },
-  {
-    header: 'Class', 
-    accessor: 'class', 
-  },
-  {
-    header: 'Teacher', 
-    accessor: 'teacher', 
-    className: 'hidden md:table-cell'
-  },
-  {
-    header: 'Due Date', 
-    accessor: 'dueDate', 
-    className: 'hidden md:table-cell'
-  },
-  ...(role === "admin" || role === "teacher" ? [
-    {
-      header: 'Actions', 
-      accessor: 'actions', 
-    }
-  ]: []),
-]
-
-const renderRow = (item : AssignmentList) => {
-return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight transition-colors cursor-pointer'>
-  <td className='flex items-center gap-4 p-4'>
-   {item.lesson.subject.name}
-  </td>
-  <td>{item.lesson.class.name}</td>
-  <td className='hidden md:table-cell'>{item.lesson.teacher.name + " " + item.lesson.teacher.surname}</td>
-  <td className='hidden md:table-cell'>{new Intl.DateTimeFormat("en-US").format(item.dueDate)}</td>
-  <td>
-    <div className='flex items-center gap-2'>
-      {(role === "admin" || role === "teacher") && (
-      <>
-        <FormModal type="update" table="assignment" data={item}/>
-        <FormModal type="delete" table="assignment" id={item.id}/>
-      </>
-    )}
-    </div>
-  </td>
-</tr>
-}
 
 const AssignmentListPage = async ({
     searchParams
@@ -70,6 +23,8 @@ const AssignmentListPage = async ({
     searchParams: {[key: string]: string} | undefined}
   ) => {
 
+    const userRole = await role()
+    const userId = await currentUserId()
     const {page, ...queryParams} = await searchParams || {}
     const p = page ? parseInt(page) : 1
 
@@ -101,17 +56,17 @@ const AssignmentListPage = async ({
     }
 
     //role conditions 
-    switch (role) {
+    switch (userRole) {
       case 'admin':
         break;
       case 'teacher':
-        query.lesson.teacherId = currentUserId!;
+        query.lesson.teacherId = userId!;
         break
       case 'student':
         query.lesson.class = {
           students: {
             some: {
-              id: currentUserId!
+              id: userId!
             }
           }
         }
@@ -120,7 +75,7 @@ const AssignmentListPage = async ({
         query.lesson.class = {
           students: {
             some: {
-              parentId: currentUserId!
+              parentId: userId!
             }
           }
         }
@@ -149,6 +104,61 @@ const AssignmentListPage = async ({
       })
     ])
 
+
+    const columns = [
+  {
+    header: 'Subject Name', 
+    accessor: 'name'
+  },
+  {
+    header: 'Class', 
+    accessor: 'class', 
+  },
+  {
+    header: 'Title', 
+    accessor: 'title', 
+    className: 'hidden md:table-cell'
+  },
+  {
+    header: 'Teacher', 
+    accessor: 'teacher', 
+    className: 'hidden md:table-cell'
+  },
+  {
+    header: 'Due Date', 
+    accessor: 'dueDate', 
+    className: 'hidden md:table-cell'
+  },
+  ...(userRole === "admin" || userRole === "teacher" ? [
+    {
+      header: 'Actions', 
+      accessor: 'actions', 
+    }
+  ]: []),
+]
+
+const renderRow = (item : AssignmentList) => {
+return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight transition-colors cursor-pointer'>
+  <td className='flex items-center gap-4 p-4'>
+   {item.lesson.subject.name}
+  </td>
+  <td>{item.lesson.class.name}</td>
+  <td className='hidden md:table-cell'>{item.title}</td>
+  <td className='hidden md:table-cell'>{item.lesson.teacher.name + " " + item.lesson.teacher.surname}</td>
+  <td className='hidden md:table-cell'>{new Intl.DateTimeFormat("en-US").format(item.dueDate)}</td>
+  <td>
+    <div className='flex items-center gap-2'>
+      {(userRole === "admin" || userRole === "teacher") && (
+      <>
+        <FormContainer type="update" table="assignment" data={item}/>
+        <FormContainer type="delete" table="assignment" id={item.id}/>
+      </>
+    )}
+    </div>
+  </td>
+</tr>
+}
+
   
 
 
@@ -166,8 +176,8 @@ const AssignmentListPage = async ({
             <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
               <ArrowDownWideNarrow className='w-4 h-4'/>
             </button>
-            {(role === "admin" || role === "teacher") && 
-              <FormModal type="create" table="assignment" />
+            {(userRole === "admin" || userRole === "teacher") && 
+              <FormContainer type="create" table="assignment" />
             }
           </div>
         </div>

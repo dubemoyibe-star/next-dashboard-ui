@@ -1,54 +1,66 @@
 "use client"
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import React from 'react'
+import React, { startTransition, useActionState, useEffect } from 'react'
 import { useForm } from 'react-hook-form';
-import z from 'zod';
 import InputField from '../InputField';
-import Image from 'next/image';
+import { ParentInput, parentSchema } from '@/lib/formValidationSchemas';
+import { createParent, updateParent} from '@/lib/actions';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
-const schema = z.object({
-  username: z.string()
-             .min(3, { message: 'Username must be at least 3 characters long!' })
-             .max(20, { message: 'Username must be at most 20 characters long!' }),
-  email: z.string().email({ message: "Invalid email address!"}),
-  password: z.string().min(8, { message: "Password must be at least 8 characters long!"}),
-  firstName: z.string().min(1, { message: "First name is required!"}),
-  lastName: z.string().min(1, { message: "Last name is required!"}),
-  phone: z.string().min(1, { message: "Phone is required!"}),
-  address: z.string().min(1, { message: "Address is required!"}),
-  bloodType: z.string().min(1, { message: "Address is required!"}),
-  birthday: z.string().date({ message: "Birthday is required!"}),
-  sex: z.enum(["male", "female"], { message: "Sex is required"}),
-  img: z.instanceof(File, { message: "Image is required"})
-});
-
-type Inputs = z.infer<typeof schema>
 
 type ParentFormProps = {
   type: "create" | "update",
-  data?: any
+  data?: any,
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  relatedData?: any
 }
 
-const ParentForm = ({type, data}: ParentFormProps) => {
+const ParentForm = ({type, data, setOpen ,relatedData}: ParentFormProps) => {
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>({
-    resolver: zodResolver(schema),
+  } = useForm<ParentInput>({
+    resolver: zodResolver(parentSchema),
   });
 
+    const [state, formAction] = useActionState(
+      type === "create" ? createParent : updateParent, 
+      {
+        success: false,
+        error: false
+      })
+  
   const onSubmit = handleSubmit(data => {
     console.log(data)
-  })
+      startTransition(() => {
+        const parsed = parentSchema.parse(data)
+        formAction(parsed)
+      })
+    })
+  
+    const router = useRouter()
+  
+  
+    useEffect(() => {
+      if(state.success) {
+        toast(`Parent has been succesfully ${type === "create" ? "created" : "updated" }!`)
+        router.refresh()
+        setOpen(false)
+      }
+    }, [state, router, type, setOpen])
+  
+   const { students } = relatedData
 
   return (
-    <div className=' flex flex-col max-h-[90vh]'>
-      <form className='flex flex-1 overflow-y-auto flex-col gap-8 px-6 py-3 sidebar-scroll' onSubmit={onSubmit}>
-      <h1 className='text-xl font-semibold'>Create a new parent</h1>
-      <span className='text-x text-gray-400 font-medium'>Authentication Information</span>
+
+      <div className='flex flex-col max-h-[90vh]'>
+        <form className='flex-1 overflow-y-auto flex flex-col gap-8 px-6 py-4 sidebar-scroll' onSubmit={onSubmit}>
+      <h1 className='text-xl font-semibold'>{type === "create" ? "Create a new parent" : "Update the parent"}</h1>
+      <span className='text-sm text-gray-400 font-medium'>Authentication Information</span>
       <div className='flex justify-between gap-4 flex-wrap'>
         <InputField 
           label="Username" 
@@ -79,17 +91,17 @@ const ParentForm = ({type, data}: ParentFormProps) => {
       <div className='flex justify-between flex-wrap gap-4'>
         <InputField 
         label="First name" 
-        name="firstName" 
-        defaultValue={data?.firstName} 
+        name="name" 
+        defaultValue={data?.name} 
         register={register} 
-        error={errors?.firstName}
+        error={errors?.name}
         />
         <InputField 
           label="Last Name" 
-          name="lastName" 
-          defaultValue={data?.lastName} 
+          name="surname" 
+          defaultValue={data?.surname} 
           register={register} 
-          error={errors?.lastName}
+          error={errors?.surname}
         />
         <InputField 
           label="Phone" 
@@ -106,66 +118,43 @@ const ParentForm = ({type, data}: ParentFormProps) => {
           register={register} 
           error={errors?.address}
         />
-        <InputField 
-          label="Blood Type" 
-          name="bloodType" 
-          defaultValue={data?.bloodType} 
-          register={register} 
-          error={errors?.bloodType}
-        />
-        <InputField 
-          label="Birthday" 
-          name="birthday" 
-          type='birthday'
-          defaultValue={data?.birthday} 
-          register={register} 
-          error={errors?.birthday}
-        
-        />
+        {data && (
+                  <InputField 
+                  label="id" 
+                  name="id" 
+                  defaultValue={data?.id} 
+                  register={register} 
+                  error={errors?.id}
+                  hidden
+                />
+                )}
 
-         <div className="relative flex flex-col gap-2 w-full md:w-1/4">
-        <label className="text-xs text-gray-500" htmlFor='sex'>Sex</label>
+        <div className="relative flex flex-col gap-2 w-full md:w-1/4">
+        <label className="text-xs text-gray-500" htmlFor='students'>Students</label>
 
         <div className="relative w-full">
-            <select className="cursor-pointer ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full" 
-            {...register("sex")} 
-            id='sex'
-            defaultValue={data?.sex}>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
+            <select multiple className="cursor-pointer ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full" 
+            {...register("students")} 
+            id='students'
+            defaultValue={data?.students}>
+              {students.map((student: {id: string, name: string, surname: string}) => (
+                <option value={student.id} key={student.id}>{student.name + " " + student.surname}</option>
+              ))}
             </select>
           </div>
-          {errors.sex?.message && (
-            <p className="text-xs text-red-400">
-              {errors.sex.message.toString()}
-            </p>
-          )}
-        </div>
-
-        <div className="relative flex flex-col justify-center gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer" htmlFor='img'>
-            <Image src="/upload.png" alt="" width={28} height={28} />
-            <span>Upload a photo</span>
-          </label>
-          <input
-          type='file'
-          id='img'
-          {...register("img")}
-          className='hidden'
-          />
-            {errors.img?.message && (
+          {errors.students?.message && (
               <p className="text-xs text-red-400">
-                {errors.img.message.toString()}
+              {errors.students.message.toString()}
               </p>
             )}
         </div>
+
       </div>
-
-     
-
+       {state.error && <span className='text-sm text-red-500 font-medium'>Something went wrong. Please try again.</span>}
       <button className='bg-blue-400 text-white p-2 rounded-md'>{type ==="create" ? "Create" : "Update" }</button>
     </form>
-    </div>
+
+      </div>
   )
 }
 

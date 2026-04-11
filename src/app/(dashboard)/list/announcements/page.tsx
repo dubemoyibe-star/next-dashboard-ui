@@ -2,11 +2,11 @@ import { ArrowDownWideNarrow,  SlidersHorizontal } from 'lucide-react'
 import Table from '@/components/Table'
 import Pagination from '@/components/Pagination'
 import TableSearch from '@/components/TableSearch'
-import FormModal from '@/components/FormModal'
 import { prisma } from '@/lib/prisma'
 import { ITEM_PER_PAGE } from '@/lib/settings'
 import { Announcement, Class, Prisma } from '@/generated/prisma/client'
 import { currentUserId, role } from '@/lib/utils'
+import FormContainer from '@/components/FormContainer'
 
 type AnnouncementList = Announcement & {
   class: Class
@@ -17,7 +17,8 @@ const AnnouncementListPage = async ({
 }: {
   searchParams: {[key: string]: string} | undefined}
 ) => {
-
+  const userRole = await role()
+  const userId = await currentUserId()
   const {page, ...queryParams} =  await searchParams || {}
   const p = page ? parseInt(page) : 1
 
@@ -25,7 +26,7 @@ const AnnouncementListPage = async ({
     { header: 'Title', accessor: 'title' },
     { header: 'Class', accessor: 'class' },
     { header: 'Date', accessor: 'date', className: 'hidden md:table-cell' },
-    ...(role === 'admin' ? [{ header: 'Actions', accessor: 'actions' }] : []),
+    ...(userRole === 'admin' ? [{ header: 'Actions', accessor: 'actions' }] : []),
   ]
 
   const renderRow = (item: AnnouncementList) => {
@@ -36,10 +37,10 @@ const AnnouncementListPage = async ({
         <td className='hidden md:table-cell'>{new Intl.DateTimeFormat('en-US').format(new Date(item.date))}</td>
         <td>
           <div className='flex items-center gap-2'>
-            {role === 'admin' && (
+            {userRole === 'admin' && (
               <>
-                <FormModal type='update' table='announcement' data={item} />
-                <FormModal type='delete' table='announcement' id={item.id} />
+                <FormContainer type='update' table='announcement' data={item} />
+                <FormContainer type='delete' table='announcement' id={item.id} />
               </>
             )}
           </div>
@@ -72,14 +73,16 @@ const AnnouncementListPage = async ({
     //role condition
   
     const roleConditions = {
-      teacher: { lessons: { some: { teacherId: currentUserId! } } },
-      student: { students: { some: { id: currentUserId! } } },
-      parent: { students: { some: { parentId: currentUserId! } } },
+      teacher: { lessons: { some: { teacherId: userId! } } },
+      student: { students: { some: { id: userId! } } },
+      parent: { students: { some: { parentId: userId! } } },
     }
   
-    query.OR = [{classId: null}, {
-      class: roleConditions[role as keyof typeof roleConditions] || {}
-    }]
+    if(userRole !== "admin") {
+      query.OR = [{classId: null}, {
+        class: roleConditions[userRole as keyof typeof roleConditions] || {}
+      }]
+    }
 
   const [data, count] = await prisma.$transaction([
     prisma.announcement.findMany({
@@ -112,11 +115,8 @@ const AnnouncementListPage = async ({
             <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
               <ArrowDownWideNarrow className='w-4 h-4'/>
             </button>
-            {role === "admin" && 
-            // <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
-            //   <Plus className='w-4 h-4'/>
-            // </button>
-            <FormModal type="create" table="announcement" />
+            {userRole === "admin" && 
+            <FormContainer type="create" table="announcement" />
             }
           </div>
         </div>

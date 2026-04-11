@@ -2,7 +2,7 @@ import { ArrowDownWideNarrow,  SlidersHorizontal } from 'lucide-react'
 import Table from '@/components/Table'
 import Pagination from '@/components/Pagination'
 import TableSearch from '@/components/TableSearch'
-import FormModal from '@/components/FormModal'
+import FormContainer from '@/components/FormContainer'
 import { ITEM_PER_PAGE } from '@/lib/settings'
 import { prisma } from '@/lib/prisma'
 import { Class, Event, Prisma } from '@/generated/prisma/client'
@@ -13,7 +13,68 @@ type EventList = Event & {
 }
 
 
-const columns = [
+
+
+const EventListPage = async ({
+  searchParams
+}: {
+  searchParams: {[key: string]: string} | undefined}
+) => {
+  const userRole = await role()
+  const userId = await currentUserId()
+  const {page, ...queryParams} = await searchParams || {}
+  const p = page ? parseInt(page) : 1
+
+  //URL QUERY PARAMS
+
+  const query : Prisma.EventWhereInput = {}
+
+  if(queryParams) {
+    for(const [key, value] of Object.entries(queryParams)) {
+      if(value !== undefined ) {
+        switch(key) {
+          case "search" :
+            query.title = {
+              contains: value,
+              mode: "insensitive"
+            }
+          break;
+          default:
+            break
+      }     
+    }
+  }
+
+  //role condition
+
+  const roleConditions = {
+    teacher: { lessons: { some: { teacherId: userId! } } },
+    student: { students: { some: { id: userId! } } },
+    parent: { students: { some: { parentId: userId! } } },
+  }
+
+  if(userRole !== "admin") {
+    query.OR = [{classId: null}, {
+      class: roleConditions[userRole as keyof typeof roleConditions] || {}
+    }]
+  }
+
+  const [data, count] = await prisma.$transaction([
+    prisma.event.findMany({
+      where: query,
+      include: {
+        class: true,
+      },
+      take: ITEM_PER_PAGE,
+      skip: ITEM_PER_PAGE * (p - 1)
+    }),
+    prisma.event.count({
+      where: query
+    })
+  ])
+
+  // console.log(data)
+  const columns = [
   {
     header: 'Title', 
     accessor: 'title'
@@ -37,7 +98,7 @@ const columns = [
     accessor: 'endTime', 
     className: 'hidden md:table-cell'
   },
-  ...(role === "admin" ? [
+  ...(userRole === "admin" ? [
     {
       header: 'Actions', 
       accessor: 'actions', 
@@ -69,73 +130,16 @@ return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 t
   </td>
   <td>
     <div className='flex items-center gap-2'>
-      {role === "admin"  && (
+      {userRole === "admin"  && (
       <>
-        <FormModal type="update" table="event" data={item}/>
-        <FormModal type="delete" table="event" id={item.id}/>
+        <FormContainer type="update" table="event" data={item}/>
+        <FormContainer type="delete" table="event" id={item.id}/>
       </>
       )}
     </div>
   </td>
 </tr>
 }
-
-const EventListPage = async ({
-  searchParams
-}: {
-  searchParams: {[key: string]: string} | undefined}
-) => {
-
-  const {page, ...queryParams} = await searchParams || {}
-  const p = page ? parseInt(page) : 1
-
-  //URL QUERY PARAMS
-
-  const query : Prisma.EventWhereInput = {}
-
-  if(queryParams) {
-    for(const [key, value] of Object.entries(queryParams)) {
-      if(value !== undefined ) {
-        switch(key) {
-          case "search" :
-            query.title = {
-              contains: value,
-              mode: "insensitive"
-            }
-          break;
-          default:
-            break
-      }     
-    }
-  }
-
-  //role condition
-
-  const roleConditions = {
-    teacher: { lessons: { some: { teacherId: currentUserId! } } },
-    student: { students: { some: { id: currentUserId! } } },
-    parent: { students: { some: { parentId: currentUserId! } } },
-  }
-
-  query.OR = [{classId: null}, {
-    class: roleConditions[role as keyof typeof roleConditions] || {}
-  }]
-
-  const [data, count] = await prisma.$transaction([
-    prisma.event.findMany({
-      where: query,
-      include: {
-        class: true,
-      },
-      take: ITEM_PER_PAGE,
-      skip: ITEM_PER_PAGE * (p - 1)
-    }),
-    prisma.event.count({
-      where: query
-    })
-  ])
-
-  // console.log(data)
 
 
   return (
@@ -152,8 +156,8 @@ const EventListPage = async ({
             <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
               <ArrowDownWideNarrow className='w-4 h-4'/>
             </button>
-            {role === "admin" && 
-             <FormModal type="create" table="event" />
+            {userRole === "admin" && 
+             <FormContainer type="create" table="event" />
             }
           </div>
         </div>

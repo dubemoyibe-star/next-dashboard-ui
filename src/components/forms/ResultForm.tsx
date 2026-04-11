@@ -1,168 +1,158 @@
 "use client"
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import React from 'react'
-import { useForm } from 'react-hook-form';
-import z from 'zod';
+import { FieldError, useForm } from 'react-hook-form';
 import InputField from '../InputField';
-import Image from 'next/image';
+import { ResultInput, resultSchema } from '@/lib/formValidationSchemas';
+import {  createResult, updateResult } from '@/lib/actions';
+import { useActionState, useEffect } from 'react';
+import { startTransition } from 'react';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
-const schema = z.object({
-  username: z.string()
-             .min(3, { message: 'Username must be at least 3 characters long!' })
-             .max(20, { message: 'Username must be at most 20 characters long!' }),
-  email: z.string().email({ message: "Invalid email address!"}),
-  password: z.string().min(8, { message: "Password must be at least 8 characters long!"}),
-  firstName: z.string().min(1, { message: "First name is required!"}),
-  lastName: z.string().min(1, { message: "Last name is required!"}),
-  phone: z.string().min(1, { message: "Phone is required!"}),
-  address: z.string().min(1, { message: "Address is required!"}),
-  bloodType: z.string().min(1, { message: "Address is required!"}),
-  birthday: z.string().date({ message: "Birthday is required!"}),
-  sex: z.enum(["male", "female"], { message: "Sex is required"}),
-  img: z.instanceof(File, { message: "Image is required"})
-});
-
-type Inputs = z.infer<typeof schema>
 
 type ResultFormProps = {
   type: "create" | "update",
   data?: any
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  relatedData?: any
 }
 
-const ResultForm = ({type, data}: ResultFormProps) => {
+const ResultForm = ({type, data, setOpen, relatedData}: ResultFormProps) => {
 
   const {
     register,
+    watch,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>({
-    resolver: zodResolver(schema),
+  } = useForm<ResultInput>({
+    resolver: zodResolver(resultSchema),
   });
 
+  const [state, formAction] = useActionState(
+    type === "create" ? createResult : updateResult, 
+    {
+      success: false,
+      error: false
+    })
+
   const onSubmit = handleSubmit(data => {
+    if (!data.examId) data.examId = null;
+    if (!data.assignmentId) data.assignmentId = null;
     console.log(data)
+    startTransition(() => {
+      const parsed = resultSchema.parse(data)
+      formAction(parsed)
+    })
   })
+
+  const router = useRouter()
+
+
+  useEffect(() => {
+    if(state.success) {
+      toast(`Result has been succesfully ${type === "create" ? "created" : "updated" }!`)
+      router.refresh()
+      setOpen(false)
+    }
+  }, [state, type, router, setOpen])
+
+  
+
+ const { exams, assignments, students } = relatedData
+ const examId = watch("examId");
+ const assignmentId = watch("assignmentId");
 
   return (
     <div className=' flex flex-col max-h-[90vh]'>
       <form className='flex flex-1 overflow-y-auto flex-col gap-8 px-6 py-3 sidebar-scroll' onSubmit={onSubmit}>
-      <h1 className='text-xl font-semibold'>Add a result</h1>
-      <span className='text-x text-gray-400 font-medium'>Authentication Information</span>
+      <h1 className='text-xl font-semibold'>{type === "create" ? "Create a new result" : "Update the result"}</h1>
       <div className='flex justify-between gap-4 flex-wrap'>
         <InputField 
-          label="Username" 
-          name="username" 
-          defaultValue={data?.username} 
+          label="Exam Score" 
+          name="score" 
+          defaultValue={data?.score} 
           register={register} 
-          error={errors?.username}
+          error={errors?.score as FieldError || undefined}
         />
+        {data && (
+          <InputField 
+          label="id" 
+          name="id" 
+          defaultValue={data?.id} 
+          register={register} 
+          error={errors?.id as FieldError | undefined}
+          hidden
+        />
+        )}
 
-        <InputField 
-          label="Email" 
-          name="email" 
-          defaultValue={data?.email} 
-          register={register} 
-          error={errors?.email}
-        />
-
-        <InputField 
-          label="Password" 
-          name="password" 
-          type='password'
-          defaultValue={data?.password} 
-          register={register} 
-          error={errors?.password}
-        />
-      </div>
-      <span className='text-sm text-gray-400 font-medium'>Personal Information</span>
-      <div className='flex justify-between flex-wrap gap-4'>
-        <InputField 
-        label="First name" 
-        name="firstName" 
-        defaultValue={data?.firstName} 
-        register={register} 
-        error={errors?.firstName}
-        />
-        <InputField 
-          label="Last Name" 
-          name="lastName" 
-          defaultValue={data?.lastName} 
-          register={register} 
-          error={errors?.lastName}
-        />
-        <InputField 
-          label="Phone" 
-          name="phone" 
-          type='phone'
-          defaultValue={data?.phone} 
-          register={register} 
-          error={errors?.phone}
-        />
-        <InputField 
-          label="Address" 
-          name="address" 
-          defaultValue={data?.address} 
-          register={register} 
-          error={errors?.address}
-        />
-        <InputField 
-          label="Blood Type" 
-          name="bloodType" 
-          defaultValue={data?.bloodType} 
-          register={register} 
-          error={errors?.bloodType}
-        />
-        <InputField 
-          label="Birthday" 
-          name="birthday" 
-          type='birthday'
-          defaultValue={data?.birthday} 
-          register={register} 
-          error={errors?.birthday}
-        
-        />
-
-         <div className="relative flex flex-col gap-2 w-full md:w-1/4">
-        <label className="text-xs text-gray-500" htmlFor='sex'>Sex</label>
-
-        <div className="relative w-full">
-            <select className="cursor-pointer ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full" 
-            {...register("sex")} 
-            id='sex'
-            defaultValue={data?.sex}>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
+        <div className="relative flex flex-col gap-2 w-full md:w-1/4">
+        <label className="text-xs text-gray-500" htmlFor='exam'>Exam</label>
+          <div className="relative w-full">
+            <select disabled={type === "create" && !!assignmentId && !examId} className="cursor-pointer ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full" 
+            {...register("examId")} 
+            id='exam'
+            defaultValue={data?.examId ?? ""}>
+              <option disabled value="" >Select an exam</option>
+              {exams.map((exam: { id: number, title: string }) => (
+                <option value={exam.id} key={exam.id}>{exam.title}</option>
+              ))}
             </select>
           </div>
-          {errors.sex?.message && (
+          {errors.examId?.message && (
             <p className="text-xs text-red-400">
-              {errors.sex.message.toString()}
+              {errors.examId.message.toString()}
+            </p>
+          )}
+        </div>
+      </div>
+
+
+        <div className='flex justify-between gap-4 flex-wrap '>
+        <div className="relative flex flex-col gap-2 w-full md:w-1/4">
+        <label className="text-xs text-gray-500" htmlFor='assignment'>Assignment</label>
+          <div className="relative w-full">
+            <select  disabled={type === "create" &&!!examId && !assignmentId} className="cursor-pointer ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full" 
+            {...register("assignmentId")} 
+            id='assignment'
+            defaultValue={data?.assignmentId ?? ""}>
+              <option disabled value="" >Select an assignment</option>
+              {assignments.map((assignment: { id: number, title: string }) => (
+                <option value={assignment.id} key={assignment.id}>{assignment.title}</option>
+              ))}
+            </select>
+          </div>
+          {errors.assignmentId?.message && (
+            <p className="text-xs text-red-400">
+              {errors.assignmentId.message.toString()}
             </p>
           )}
         </div>
 
-        <div className="relative flex flex-col justify-center gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer" htmlFor='img'>
-            <Image src="/upload.png" alt="" width={28} height={28} />
-            <span>Upload a photo</span>
-          </label>
-          <input
-          type='file'
-          id='img'
-          {...register("img")}
-          className='hidden'
-          />
-            {errors.img?.message && (
-              <p className="text-xs text-red-400">
-                {errors.img.message.toString()}
-              </p>
-            )}
+              <div className="relative flex flex-col gap-2 w-full md:w-1/4">
+        <label className="text-xs text-gray-500" htmlFor='student'>Student</label>
+          <div className="relative w-full">
+            <select className="cursor-pointer ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full" 
+            {...register("studentId")} 
+            id='student'
+            defaultValue={data?.studentId ?? ""}>
+              <option disabled value="" >Select a student</option>
+              {students.map((student: { id: number, name: string, surname: string }) => (
+                <option value={student.id} key={student.id}>{student.name + " " + student.surname}</option>
+              ))}
+            </select>
+          </div>
+          {errors.studentId?.message && (
+            <p className="text-xs text-red-400">
+              {errors.studentId.message.toString()}
+            </p>
+          )}
         </div>
-      </div>
+        </div>
 
-     
 
+
+      {state.error && <span className='text-sm text-red-500 font-medium'>Something went wrong. Please try again.</span>}
       <button className='bg-blue-400 text-white p-2 rounded-md'>{type ==="create" ? "Create" : "Update" }</button>
     </form>
     </div>

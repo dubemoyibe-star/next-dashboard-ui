@@ -2,69 +2,33 @@ import { ArrowDownWideNarrow, SlidersHorizontal } from 'lucide-react'
 import Table from '@/components/Table'
 import Pagination from '@/components/Pagination'
 import TableSearch from '@/components/TableSearch'
-import FormModal from '@/components/FormModal'
+import FormContainer from '@/components/FormContainer'
 import { Class, Lesson, Prisma, Subject, Teacher } from '@/generated/prisma/client'
 import { prisma } from '@/lib/prisma'
 import { ITEM_PER_PAGE } from '@/lib/settings'
-import { role } from '@/lib/utils'
+import { currentUserId, role } from '@/lib/utils'
+
 
 type LessonList = Lesson & { teacher: Teacher } & {class: Class} & {subject: Subject}
 
 
-const columns = [
-  {
-    header: 'Subject Name', 
-    accessor: 'name'
-  },
-  {
-    header: 'Class', 
-    accessor: 'class', 
-  },
-  {
-    header: 'Teacher', 
-    accessor: 'teacher', 
-    className: 'hidden md:table-cell'
-  },
-  ...(role === "admin" ? [{
-    header: 'Actions', 
-    accessor: 'actions', 
-    
-  }] : []),
 
-]
-
-const renderRow = (item : LessonList) => {
-return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight transition-colors cursor-pointer'>
-  <td className='flex items-center gap-4 p-4'>
-   {item.subject.name}
-  </td>
-  <td>{item.class.name}</td>
-  <td className='hidden md:table-cell'>{item.teacher.name + " " + item.teacher.surname}</td>
-
-  <td>
-    <div className='flex items-center gap-2'>
-      {role === "admin"  && (
-      <>
-        <FormModal type="update" table="lesson" data={item}/>
-        <FormModal type="delete" table="lesson" id={item.id}/>
-      </>
-    )}
-    </div>
-  </td>
-</tr>
-}
 
 const LessonsListPage = async ({
     searchParams
   }: {
     searchParams: {[key: string]: string} | undefined}
   ) => {
-
+    const userRole = await role()
+    const userId = await currentUserId()
     const {page, ...queryParams} = await searchParams || {}
     const p = page ? parseInt(page) : 1
 
     //URL QUERY PARAMS
     const query : Prisma.LessonWhereInput = {}
+    if(userRole === "teacher") {
+      query.teacherId = userId!
+    }
 
     if(queryParams) {
       for(const [key, value] of Object.entries(queryParams)) {
@@ -108,6 +72,66 @@ const LessonsListPage = async ({
 
     // console.log(data)
 
+        const columns = [
+      {
+        header: 'Subject Name', 
+        accessor: 'name'
+      },
+      {
+        header: 'Class', 
+        accessor: 'class', 
+      },
+      {
+        header: 'Duration', 
+        accessor: 'duration', 
+        className: 'hidden md:table-cell'
+      },
+      {
+        header: 'Teacher', 
+        accessor: 'teacher', 
+        className: 'hidden md:table-cell'
+      },
+      ...((userRole === "admin" || userRole === "teacher") ? [{
+        header: 'Actions', 
+        accessor: 'actions', 
+        
+      }] : []),
+
+    ]
+
+    const formatTime = (date: Date) => {
+      let hours = date.getHours();
+      const minutes = date.getMinutes();
+      const ampm = hours >= 12 ? "PM" : "AM";
+      hours = hours % 12;
+      if (hours === 0) hours = 12;
+      return `${hours}:${minutes.toString().padStart(2, "0")}${ampm}`;
+    };
+
+    
+
+    const renderRow = (item : LessonList) => {
+    return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight transition-colors cursor-pointer'>
+      <td className='flex items-center gap-4 p-4'>
+      {item.subject.name}
+      </td>
+      <td>{item.class.name}</td>
+      <td className='hidden md:table-cell'>{`${item.day.slice(0,3).toUpperCase()} ${formatTime(item.startTime)} - ${formatTime(item.endTime)}`}</td>
+      <td className='hidden md:table-cell'>{item.teacher.name + " " + item.teacher.surname}</td>
+
+      <td>
+        <div className='flex items-center gap-2'>
+          {(userRole === "admin" || userRole === "teacher") && (
+          <>
+            <FormContainer type="update" table="lesson" data={item}/>
+            <FormContainer type="delete" table="lesson" id={item.id}/>
+          </>
+        )}
+        </div>
+      </td>
+    </tr>
+    }
+
 
 
   return (
@@ -124,8 +148,8 @@ const LessonsListPage = async ({
             <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
               <ArrowDownWideNarrow className='w-4 h-4'/>
             </button>
-            {role === "admin" && 
-              <FormModal type="create" table="lesson" />
+            {(userRole === "admin" || userRole === "teacher") && 
+              <FormContainer type="create" table="lesson" />
             }
           </div>
         </div>
