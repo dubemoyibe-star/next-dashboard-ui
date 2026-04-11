@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+  }
+}
+
+body {
+  @apply bg-[#F7F8FA] dark:bg-gray-950 text-gray-900 dark:text-gray-100;
+}
+
 /* subtle scrollbar */
 .sidebar-scroll::-webkit-scrollbar {
   width: 0px;
@@ -28,6 +44,45 @@
   width: 100% !important;
   border: none !important;
   font-family: "Inter", sans-serif;
+  background-color: transparent !important;
+}
+
+.react-calendar__month-view__weekdays {
+  color: #6b7280 !important;
+}
+
+.react-calendar__month-view__days__day {
+  color: #374151 !important;
+}
+
+.react-calendar__tile {
+  color: #374151 !important;
+}
+
+.dark .react-calendar {
+  background-color: transparent !important;
+}
+
+.dark .react-calendar__month-view__weekdays {
+  color: #9ca3af !important;
+}
+
+.dark .react-calendar__month-view__days__day {
+  color: #d1d5db !important;
+}
+
+.dark .react-calendar__tile {
+  color: #d1d5db !important;
+}
+
+.dark .react-calendar__tile--active {
+  background-color: #C3EBFA !important;
+  color: black !important;
+}
+
+.dark .react-calendar__tile:enabled:hover,
+.dark .react-calendar__tile:enabled:focus {
+  background-color: #e5e7eb !important;
 }
 
 .react-calendar__navigation__label__labelText {
@@ -135,6 +190,136 @@
 .rbc-event-label {
   color: gray !important;
   margin-bottom: 5px !important;
+}
+
+/* Dark Mode BigCalendar Styles */
+.dark .rbc-btn-group:last-child button {
+  background-color: #4B5CFF !important;
+  color: white !important;
+}
+
+.dark .rbc-toolbar-label {
+  color: #e5e7eb !important;
+}
+
+.dark .rbc-time-view {
+  border-color: #374151 !important;
+  background-color: #1f2937 !important;
+}
+
+.dark .rbc-timeslot-group {
+  background-color: #1f2937 !important;
+  border-color: #374151 !important;
+}
+
+.dark .rbc-time-slot {
+  border-color: #374151 !important;
+}
+
+.dark .rbc-time-content {
+  border-color: #374151 !important;
+}
+
+.dark .rbc-time-gutter.rbc-time-column {
+  color: #9ca3af !important;
+  background-color: #1f2937 !important;
+}
+
+.dark .rbc-day-slot {
+  background-color: #1f2937 !important;
+}
+
+.dark .rbc-day-slot .rbc-time-slot {
+  border-color: #374151 !important;
+}
+
+.dark .rbc-current-time-indicator {
+  background-color: #ef4444 !important;
+}
+
+.dark .rbc-allday-cell {
+  color: #d1d5db !important;
+}
+
+.dark .rbc-month-view {
+  background-color: #1f2937 !important;
+  border-color: #374151 !important;
+}
+
+.dark .rbc-month-row {
+  border-color: #374151 !important;
+}
+
+.dark .rbc-month-row + .rbc-month-row {
+  border-color: #374151 !important;
+}
+
+.dark .rbc-day-bg {
+  background-color: #1f2937 !important;
+  border-color: #374151 !important;
+}
+
+.dark .rbc-day-bg + .rbc-day-bg {
+  border-color: #374151 !important;
+}
+
+.dark .rbc-header {
+  border-color: #374151 !important;
+  color: #9ca3af !important;
+  background-color: #1f2937 !important;
+}
+
+.dark .rbc-date-cell {
+  color: #d1d5db !important;
+}
+
+.dark .rbc-date-cell.rbc-off {
+  color: #6b7280 !important;
+}
+
+.dark .rbc-time-header-content {
+  border-color: #374151 !important;
+  color: #9ca3af !important;
+}
+
+.dark .rbc-event {
+  color: white !important;
+}
+
+.dark .rbc-event:nth-child(1) {
+  background-color: #0ea5e9 !important;
+}
+
+.dark .rbc-event:nth-child(2) {
+  background-color: #eab308 !important;
+}
+
+.dark .rbc-event:nth-child(3) {
+  background-color: #8b5cf6 !important;
+}
+
+.dark .rbc-event:nth-child(4) {
+  background-color: #ec4899 !important;
+}
+
+.dark .rbc-event:nth-child(5) {
+  background-color: #0ea5e9 !important;
+}
+
+.dark .rbc-event:nth-child(6) {
+  background-color: #eab308 !important;
+}
+
+.dark .rbc-event:nth-child(7) {
+  background-color: #8b5cf6 !important;
+}
+
+.dark .rbc-event:nth-child(8) {
+  background-color: #ec4899 !important;
+}
+
+.dark .rbc-today {
+  background-color: #374151 !important;
 }
 
 /* Clerk SignIn Component Custom Styles */

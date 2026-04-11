@@ -24,38 +24,38 @@ const Announcements = async () => {
   })
 
   return (
-    <div className="bg-white rounded-md p-4">
+    <div className="bg-white dark:bg-gray-800 rounded-md p-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold">Announcements</h1>
-        <span className="text-xs text-gray-400">View All</span>
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Announcements</h1>
+        <span className="text-xs text-gray-400 dark:text-gray-500">View All</span>
       </div>
       {data[0] && <div className="flex flex-col gap-4 mt-4">
-        <div className="bg-lamaSkyLight rounded-md p-4">
+        <div className="bg-lamaSkyLight dark:bg-gray-700 rounded-md p-4">
           <div className="flex items-center justify-between">
-            <h1>{data[0].title}</h1>
-            <span className="text-xs text-gray-400 bg-white rounded-md px-1 py-1">{new Intl.DateTimeFormat("en-GB").format(data[0].date)}</span>
+            <h1 className="text-gray-900 dark:text-gray-100">{data[0].title}</h1>
+            <span className="text-xs text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-600 rounded-md px-1 py-1">{new Intl.DateTimeFormat("en-GB").format(data[0].date)}</span>
           </div>
-          <p className="text-sm text-gray-400 mt-1">{data[0].description}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{data[0].description}</p>
         </div>
       </div>}
 
       {data[1] && <div className="flex flex-col gap-4 mt-4">
-        <div className="bg-lamaPurpleLight rounded-md p-4">
+        <div className="bg-lamaPurpleLight dark:bg-gray-700 rounded-md p-4">
           <div className="flex items-center justify-between">
-            <h1>{data[1].title}</h1>
-            <span className="text-xs text-gray-400 bg-white rounded-md px-1 py-1">{new Intl.DateTimeFormat("en-GB").format(data[1].date)}</span>
+            <h1 className="text-gray-900 dark:text-gray-100">{data[1].title}</h1>
+            <span className="text-xs text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-600 rounded-md px-1 py-1">{new Intl.DateTimeFormat("en-GB").format(data[1].date)}</span>
           </div>
-          <p className="text-sm text-gray-400 mt-1">{data[1].description}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{data[1].description}</p>
         </div>
       </div>}
 
       {data[2] && <div className="flex flex-col gap-4 mt-4">
-        <div className="bg-lamaYellowLight rounded-md p-4">
+        <div className="bg-lamaYellowLight dark:bg-gray-700 rounded-md p-4">
           <div className="flex items-center justify-between">
-            <h1>{data[2].title}</h1>
-            <span className="text-xs text-gray-400 bg-white rounded-md px-1 py-1">{new Intl.DateTimeFormat("en-GB").format(data[2].date)}</span>
+            <h1 className="text-gray-900 dark:text-gray-100">{data[2].title}</h1>
+            <span className="text-xs text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-600 rounded-md px-1 py-1">{new Intl.DateTimeFormat("en-GB").format(data[2].date)}</span>
           </div>
-          <p className="text-sm text-gray-400 mt-1">{data[2].description}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{data[2].description}</p>
         </div>
       </div>}
     </div>

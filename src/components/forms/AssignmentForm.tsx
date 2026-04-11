@@ -59,7 +59,7 @@ const AssignmentForm = ({type, data, setOpen, relatedData}: AssignmentFormProps)
   return (
     <div className=' flex flex-col max-h-[90vh]'>
       <form className='flex flex-1 overflow-y-auto flex-col gap-8 px-6 py-3 sidebar-scroll' onSubmit={onSubmit}>
-      <h1 className='text-xl font-semibold'>{type === "create" ? "Create a new assignment" : "Update the assignment"}</h1>
+      <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-100'>{type === "create" ? "Create a new assignment" : "Update the assignment"}</h1>
       <div className='flex justify-between gap-4 flex-wrap'>
         <InputField 
           label="Assignment Title" 
@@ -105,9 +105,9 @@ const AssignmentForm = ({type, data, setOpen, relatedData}: AssignmentFormProps)
       </div>
 
       <div className="relative flex flex-col gap-2 w-full md:w-1/4">
-        <label className="text-xs text-gray-500" htmlFor='lesson'>Lesson</label>
+        <label className="text-xs text-gray-500 dark:text-gray-400" htmlFor='lesson'>Lesson</label>
           <div className="relative w-full">
-            <select className="cursor-pointer ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full" 
+            <select className="cursor-pointer ring-[1.5px] ring-gray-300 dark:ring-gray-600 p-2 rounded-md text-sm w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" 
             {...register("lessonId")} 
             id='lesson'
             defaultValue={data?.teachers}>

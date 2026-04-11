@@ -14,13 +14,13 @@ const UserCard = async ({type} : {type: "admin" | "teacher" | "student" | "paren
   const data = await modelMap[type].count()
 
   return (
-    <div className='rounded-2xl odd:bg-lamaPurple even:bg-lamaYellow p-4 flex-1 min-w-[130px]'>
+    <div className='rounded-2xl odd:bg-lamaPurple even:bg-lamaYellow dark:odd:bg-gray-700 dark:even:bg-gray-600 p-4 flex-1 min-w-[130px]'>
       <div className='flex justify-between items-center'>
-        <span className='text-[10px] bg-white px-2 py-1 rounded-full text-green-600'>2025/26</span>
+        <span className='text-[10px] bg-white dark:bg-gray-800 px-2 py-1 rounded-full text-green-600'>2025/26</span>
         <FaEllipsisH className='cursor-pointer text-white'/>
       </div>
-      <h1 className='text-2xl font-semibold my-4'>{data}</h1>
-      <h1 className='capitalize text-sm font-medium text-gray-500'>{type}<span className='lowercase'>s</span></h1>
+      <h1 className='text-2xl font-semibold my-4 text-gray-900 dark:text-gray-100'>{data}</h1>
+      <h1 className='capitalize text-sm font-medium text-gray-500 dark:text-gray-300'>{type}<span className='lowercase'>s</span></h1>
     </div>
   )
 }

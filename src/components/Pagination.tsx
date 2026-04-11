@@ -22,11 +22,11 @@ const Pagination = ({page, count}: PaginationPropsType) => {
     router.push(`${window.location.pathname}?${params.toString()}`)
   }
   return (
-    <div className='p-4 flex items-center justify-between text-gray-500'>
+    <div className='p-4 flex items-center justify-between text-gray-500 dark:text-gray-400'>
       <button 
       disabled={!hasPrev}
       onClick={() => changePage(page - 1)}
-      className='py-2 px-4 rounded-md bg-slate-200 text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed'>
+      className='py-2 px-4 rounded-md bg-slate-200 dark:bg-gray-700 text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-300 dark:hover:bg-gray-600 transition-colors'>
         Prev
       </button>
       <div className='flex items-center gap-2 text-sm '>
@@ -36,7 +36,7 @@ const Pagination = ({page, count}: PaginationPropsType) => {
           <button 
           key={pageIndex} 
           onClick={() => changePage(pageIndex)}
-          className={`px-2 rounded-sm ${page === pageIndex ? "bg-lamaSky" : ""}`}>
+          className={`px-2 rounded-sm ${page === pageIndex ? "bg-lamaSky" : "dark:bg-gray-700 dark:hover:bg-gray-600"}`}>
             {pageIndex}
           </button>
         )
@@ -45,7 +45,7 @@ const Pagination = ({page, count}: PaginationPropsType) => {
       <button 
       disabled={!hasNext}
       onClick={() => changePage(page + 1)}
-      className='py-2 px-4 rounded-md bg-slate-200 text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed'>
+      className='py-2 px-4 rounded-md bg-slate-200 dark:bg-gray-700 text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-300 dark:hover:bg-gray-600 transition-colors'>
         Next
       </button>
     </div>

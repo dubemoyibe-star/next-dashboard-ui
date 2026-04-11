@@ -67,7 +67,7 @@ const LessonForm = ({type, data, setOpen, relatedData}: LessonFormProps) => {
   return (
     <div className=' flex flex-col max-h-[90vh]'>
       <form className='flex flex-1 overflow-y-auto flex-col gap-8 px-6 py-3 sidebar-scroll' onSubmit={onSubmit}>
-      <h1 className='text-xl font-semibold'>{type === "create" ? "Create a new lesson" : "Update the lesson"}</h1>
+      <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-100'>{type === "create" ? "Create a new lesson" : "Update the lesson"}</h1>
       <div className='flex justify-between gap-4 flex-wrap'>
         <InputField 
           label="Lesson name" 
@@ -111,12 +111,12 @@ const LessonForm = ({type, data, setOpen, relatedData}: LessonFormProps) => {
       <div className='flex justify-between flex-wrap gap-4'>
 
       <div className="relative flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500" htmlFor="teacherId">Teacher</label>
+          <label className="text-xs text-gray-500 dark:text-gray-400" htmlFor="teacherId">Teacher</label>
           <select
             id="teacherId"
             {...register("teacherId")}
              defaultValue={type === "update" ? data?.teacherId : ""}
-            className="cursor-pointer ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            className="cursor-pointer ring-[1.5px] ring-gray-300 dark:ring-gray-600 p-2 rounded-md text-sm w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           >
             <option value="" disabled>Select a teacher</option>
             {teachers.map((teacher: { id: string; name: string; surname: string }) => (
@@ -134,12 +134,12 @@ const LessonForm = ({type, data, setOpen, relatedData}: LessonFormProps) => {
         </div>
 
         <div className="relative flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500" htmlFor="classId">Class</label>
+          <label className="text-xs text-gray-500 dark:text-gray-400" htmlFor="classId">Class</label>
           <select
             id="classId"
             {...register("classId")}
              defaultValue={type === "update" ? data?.classId : ""}
-            className="cursor-pointer ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            className="cursor-pointer ring-[1.5px] ring-gray-300 dark:ring-gray-600 p-2 rounded-md text-sm w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           >
             <option value="" disabled>Select a class</option>
             {classes.map((classItem: { id: number; name: string }) => (
@@ -154,12 +154,12 @@ const LessonForm = ({type, data, setOpen, relatedData}: LessonFormProps) => {
         </div>
 
         <div className="relative flex flex-col gap-2 w-full md:w-1/4">
-      <label className="text-xs text-gray-500" htmlFor="subjectId">Subject</label>
+      <label className="text-xs text-gray-500 dark:text-gray-400" htmlFor="subjectId">Subject</label>
       <select
         id="subjectId"
         {...register("subjectId")}
          defaultValue={type === "update" ? data?.subjectId : ""}
-        className="cursor-pointer ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+        className="cursor-pointer ring-[1.5px] ring-gray-300 dark:ring-gray-600 p-2 rounded-md text-sm w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
       >
         <option value="" disabled>Select a subject</option>
         {subjects.map((subject: { id: number; name: string }) => (
@@ -174,12 +174,12 @@ const LessonForm = ({type, data, setOpen, relatedData}: LessonFormProps) => {
     </div>
 
     <div className="relative flex flex-col gap-2 w-full md:w-1/4">
-    <label className="text-xs text-gray-500" htmlFor="day">Day</label>
+    <label className="text-xs text-gray-500 dark:text-gray-400" htmlFor="day">Day</label>
     <select
       id="day"
       {...register("day")}
        defaultValue={type === "update" ? data?.day : ""}
-      className="cursor-pointer ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+      className="cursor-pointer ring-[1.5px] ring-gray-300 dark:ring-gray-600 p-2 rounded-md text-sm w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
     >
       <option value="" disabled>Select a day</option>
       <option value="MONDAY">Monday</option>

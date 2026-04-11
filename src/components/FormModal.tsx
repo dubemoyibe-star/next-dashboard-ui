@@ -20,10 +20,7 @@ import { useRouter } from 'next/navigation';
 import React, {  useActionState, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { FormContainerProps } from './FormContainer';
-//import TeacherForm from './forms/TeacherForm'
-//import StudentForm from './forms/StudentForm'
  
-
 const deleteActionMap = {
   teacher: deleteTeacher,
   student: deleteStudent,
@@ -35,7 +32,7 @@ const deleteActionMap = {
   assignment: deleteAssignment,
   result: deleteResult,
   event: deleteEvent,
-  attendance: deleteSubject, // can be updated in the future 
+  attendance: deleteSubject,
   announcement: deleteAnnouncement
 }
 
@@ -89,8 +86,6 @@ const forms: {
   announcement: (setOpen ,type, data, relatedData) => <AnnouncementForm type={type} data={data} setOpen={setOpen} relatedData={relatedData} />,
 };
 
-
-
 const FormModal = ({table, type, data, id, relatedData} : FormContainerProps & {relatedData: any}) => {
   
   const size = type === "create" ? "w-8 h-8" : "w-7 h-7"
@@ -121,15 +116,15 @@ const FormModal = ({table, type, data, id, relatedData} : FormContainerProps & {
     return type === "delete" && id ? (
     <form action={formAction} className='px-4 py-4 flex flex-col gap-4'>
       <input type='number | text' name="id" value={id} hidden readOnly/>
-      <span className='text-center font-medium text-[16px]'>All data will be lost. Are u sure you want to delete this {table}? </span>
-      <span className='text-gray-500 text-center'>This action is irreversible.</span>
+      <span className='text-center font-medium text-[16px] text-gray-900 dark:text-gray-100'>All data will be lost. Are u sure you want to delete this {table}? </span>
+      <span className='text-gray-500 dark:text-gray-400 text-center'>This action is irreversible.</span>
       <button 
       className='bg-red-700 text-white py-2 px-4 rounded-md border-none sm:w-max sm:self-center '>Delete</button>
     </form>
      ) : type === "create" || type === "update" ?(
-      forms[table](setOpen, type, data, relatedData)
+       forms[table](setOpen, type, data, relatedData)
      ) : (
-      "Form not found"
+       "Form not found"
      )
   }
 
@@ -143,12 +138,12 @@ const FormModal = ({table, type, data, id, relatedData} : FormContainerProps & {
    </button>
    {open && (
     <div className=' w-screen h-screen fixed left-0 top-0 bg-black bg-opacity-60 z-50 flex items-center justify-center'>
-      <div className=' relative bg-white rounded-md w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%] overflow-hidden'>
+      <div className=' relative bg-white dark:bg-gray-800 rounded-md w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%] overflow-hidden'>
         <div 
           className='absolute top-3 right-3 cursor-pointer z-100'
           onClick={() => setOpen(false)}
         >
-          <X className='w-6 h-6 text-gray-600 hover:text-red-700'/>
+          <X className='w-6 h-6 text-gray-600 hover:text-red-700 dark:text-gray-400'/>
         </div>
         <div className='p-4'>
           <Form />

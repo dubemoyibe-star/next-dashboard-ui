@@ -104,7 +104,7 @@ const StudentsListPage = async ({
 ]
 
 const renderRow = (item : StudentList) => {
-return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight transition-colors cursor-pointer'>
+return <tr key={item.id} className=' border-b border-gray-200 dark:border-gray-700 even:bg-slate-50 dark:even:bg-gray-800 text-sm hover:bg-lamaPurpleLight dark:hover:bg-gray-700 transition-colors cursor-pointer'>
   <td className='flex items-center gap-4 p-4'>
     <Image 
     src={item.img || "/noAvatar.png"}  
@@ -113,14 +113,14 @@ return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 t
     className='md:hidden xl:block w-10 h-10 rounded-full object-cover'
     />
     <div className='flex flex-col'>
-      <h3 className='font-semibold'>{item.name}</h3>
-      <p className='text-xs text-gray-500'>{item.class.name}</p>
+      <h3 className='font-semibold text-gray-900 dark:text-gray-100'>{item.name}</h3>
+      <p className='text-xs text-gray-500 dark:text-gray-400'>{item.class.name}</p>
     </div>
   </td>
-  <td className='hidden md:table-cell'>{item.username}</td>
-  <td>{item.class.name[0]}</td>
-  <td className='hidden lg:table-cell'>{item.phone}</td>
-  <td className='hidden lg:table-cell'>{item.address}</td>
+  <td className='hidden md:table-cell text-gray-600 dark:text-gray-300'>{item.username}</td>
+  <td className='text-gray-600 dark:text-gray-300'>{item.class.name[0]}</td>
+  <td className='hidden lg:table-cell text-gray-600 dark:text-gray-300'>{item.phone}</td>
+  <td className='hidden lg:table-cell text-gray-600 dark:text-gray-300'>{item.address}</td>
   <td>
     <div className='flex items-center gap-2'>
       <Link href={`/list/students/${item.id}`}>
@@ -138,18 +138,18 @@ return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 t
 }
 
   return (
-    <div className='bg-white p-4 rounded-md flex-1 m-4 mt-0 '>
+    <div className='bg-white dark:bg-gray-800 p-4 rounded-md flex-1 m-4 mt-0 dark:mt-1'>
       {/*TOP */}
-      <div className='flex items-center justify-between mb-4'>
-        <h1 className='hidden md:block text-lg font-semibold'>All Students</h1>
+      <div className='flex items-center justify-between mb-6'>
+        <h1 className='hidden md:block text-lg font-semibold text-gray-900 dark:text-gray-100'>All Students</h1>
         <div className='flex flex-col md:flex-row items-center justify-center gap-4 w-full md:w-auto'>
           <TableSearch />
           <div className='flex items-center gap-4 self-end '>
             <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
-              <SlidersHorizontal className='w-4 h-4'/>
+              <SlidersHorizontal className='w-4 h-4 text-gray-700 dark:text-gray-900'/>
             </button>
             <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
-              <ArrowDownWideNarrow className='w-4 h-4'/>
+              <ArrowDownWideNarrow className='w-4 h-4 text-gray-700 dark:text-gray-900'/>
             </button>
             {userRole === "admin" && 
             <FormContainer type="create" table="student"/>

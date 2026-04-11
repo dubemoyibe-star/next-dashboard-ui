@@ -55,12 +55,12 @@ const AttendanceChartContainer = async () => {
   }))
   
   return (
-    <div className='bg-white rounded-lg p-4 h-full'>
+    <div className='bg-white dark:bg-gray-800 rounded-lg p-4 h-full'>
       <div className='flex justify-between items-center'>
-        <h1 className='text-lg font-semibold'>
+        <h1 className='text-lg font-semibold text-gray-900 dark:text-gray-100'>
           Attendance
         </h1>
-        <FaEllipsisH className='w-5 h-5 text-gray-500'/>
+        <FaEllipsisH className='w-5 h-5 text-gray-500 dark:text-gray-400'/>
       </div>
       <AttendanceChart data={data}/>
     </div>

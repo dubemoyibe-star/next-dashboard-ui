@@ -31,14 +31,14 @@ const InputField = ({
 
   return (
     <div className={hidden ? "hidden" : "relative flex flex-col gap-2 w-full md:w-1/4" }>
-      <label className="text-xs text-gray-500" htmlFor={name}>{label}</label>
+      <label className="text-xs text-gray-500 dark:text-gray-400" htmlFor={name}>{label}</label>
 
       <div className="relative w-full">
        {textarea ? (
           <textarea
             id={name}
             {...register(name)}
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            className="ring-[1.5px] ring-gray-300 dark:ring-gray-600 p-2 rounded-md text-sm w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             defaultValue={defaultValue}
             {...inputProps}
           />
@@ -47,7 +47,7 @@ const InputField = ({
             id={name}
             type={isPassword ? (showPassword ? "text" : "password") : type}
             {...register(name)}
-            className="ring-[1.5px] ring-gray-300 p-2 pr-10 rounded-md text-sm w-full"
+            className="ring-[1.5px] ring-gray-300 dark:ring-gray-600 p-2 pr-10 rounded-md text-sm w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             defaultValue={defaultValue}
             {...inputProps}
           />

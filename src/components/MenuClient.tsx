@@ -108,11 +108,11 @@ const MenuClient = ({ role, setSidebarOpen }: { role: string; setSidebarOpen?: R
     <div className="mb-4 text-sm pb-8">
       {menuItems.map(i => (
         <div className="px-2 flex flex-col gap-2 " key={i.title}>
-          <span className=" text-gray-400 font-light my-4">{i.title}</span>
+          <span className=" text-gray-400 dark:text-gray-500 font-light my-4">{i.title}</span>
           {i.items.map((item) => {
             if(item.visible.includes(role)) {
               return (
-                  <Link onClick={() => setSidebarOpen && setSidebarOpen(prev => !prev)} href={item.href} key={item.label} className={` min-w-[20px] flex items-center justify-start gap-4 text-gray-500 py-2  rounded-md hover:bg-lamaSkyLight transition-colors duration-200 px-2 ${pathname === item.href ? 'bg-[#A3D9F5]' : ''}`}>
+                  <Link onClick={() => setSidebarOpen && setSidebarOpen(prev => !prev)} href={item.href} key={item.label} className={` min-w-[20px] flex items-center justify-start gap-4 text-gray-500 dark:text-gray-400 py-2  rounded-md hover:bg-lamaSkyLight dark:hover:bg-gray-800 transition-colors duration-200 px-2 ${pathname === item.href ? 'bg-[#A3D9F5] dark:bg-gray-700' : ''}`}>
                     <item.icon className="w-5 h-5 ml-2"/>
                     <span >{item.label}</span>
                   </Link>

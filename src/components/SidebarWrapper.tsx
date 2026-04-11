@@ -12,7 +12,7 @@ export default function SidebarWrapper({ role }: { role: string }) {
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden lg:flex flex-col overflow-y-auto sidebar-scroll w-[14%] md:w-[10%] lg:w-[18%] xl:w-[16%] py-4">
+      <div className="hidden lg:flex flex-col overflow-y-auto sidebar-scroll w-[14%] md:w-[10%] lg:w-[18%] xl:w-[16%] py-4 bg-white dark:bg-gray-900 border-r dark:border-gray-800">
         <Link
           href="/"
           className="flex items-center justify-center lg:justify-start gap-2 mb-4 lg:ml-4"
@@ -31,8 +31,7 @@ export default function SidebarWrapper({ role }: { role: string }) {
 
       {/* Mobile Sidebar Overlay */}
       <div
-        className={`sidebar-scroll overflow-y-auto fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-50 transform transition-transform duration-300 lg:hidden
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`sidebar-scroll overflow-y-auto fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-900 shadow-lg z-50 transform transition-transform duration-300 lg:hidden ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
        <div className="flex justify-between items-center">
          <Link href="/" className="flex items-center justify-start gap-2 p-4">
@@ -55,10 +54,10 @@ export default function SidebarWrapper({ role }: { role: string }) {
 
       {/* Mobile Menu Button */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-30 p-2 bg-gray-200 rounded-md shadow-sm hover:shadow-md hover:bg-gray-300 transition-colors duration-200"
+        className="lg:hidden fixed top-4 left-4 z-30 p-2 bg-gray-300  rounded-md shadow-sm hover:shadow-md hover:bg-gray-300 transition-colors duration-200"
         onClick={() => setSidebarOpen(true)}
       >
-        <MenuIcon className="w-5 h-5 text-gray-600" />
+        <MenuIcon className="w-5 h-5 text-gray-600 " />
       </button>
     </>
   );

@@ -108,20 +108,20 @@ const EventListPage = async ({
 ]
 
 const renderRow = (item : EventList) => {
-return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight transition-colors cursor-pointer'>
-  <td className='flex items-center gap-4 p-4'>
+return <tr key={item.id} className=' border-b border-gray-200 dark:border-gray-700 even:bg-slate-50 dark:even:bg-gray-800 text-sm hover:bg-lamaPurpleLight dark:hover:bg-gray-700 transition-colors cursor-pointer'>
+  <td className='flex items-center gap-4 p-4 text-gray-900 dark:text-gray-100'>
    {item.title}
   </td>
-  <td>{item.class?.name || "-"}</td>
-  <td className='hidden md:table-cell'>{new Intl.DateTimeFormat("en-US").format(item.startTime)}</td>
-  <td className='hidden md:table-cell'>
+  <td className='text-gray-600 dark:text-gray-300'>{item.class?.name || "-"}</td>
+  <td className='hidden md:table-cell text-gray-600 dark:text-gray-300'>{new Intl.DateTimeFormat("en-US").format(item.startTime)}</td>
+  <td className='hidden md:table-cell text-gray-600 dark:text-gray-300'>
       {item.startTime.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
     })} 
   </td>
-  <td className='hidden md:table-cell'>
+  <td className='hidden md:table-cell text-gray-600 dark:text-gray-300'>
     {item.endTime.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
@@ -143,18 +143,18 @@ return <tr key={item.id} className=' border-b border-gray-200 even:bg-slate-50 t
 
 
   return (
-    <div className='bg-white p-4 rounded-md flex-1 m-4 mt-0 '>
+    <div className='bg-white dark:bg-gray-800 p-4 rounded-md flex-1 m-4 mt-0 dark:mt-1'>
       {/*TOP */}
       <div className='flex items-center justify-between mb-4'>
-        <h1 className='hidden md:block text-lg font-semibold'>All Events</h1>
+        <h1 className='hidden md:block text-lg font-semibold text-gray-900 dark:text-gray-100'>All Events</h1>
         <div className='flex flex-col md:flex-row items-center justify-center gap-4 w-full md:w-auto'>
           <TableSearch />
           <div className='flex items-center gap-4 self-end '>
             <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
-              <SlidersHorizontal className='w-4 h-4'/>
+              <SlidersHorizontal className='w-4 h-4 text-gray-700 dark:text-gray-900'/>
             </button>
             <button className='w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow'>
-              <ArrowDownWideNarrow className='w-4 h-4'/>
+              <ArrowDownWideNarrow className='w-4 h-4 text-gray-700 dark:text-gray-900'/>
             </button>
             {userRole === "admin" && 
              <FormContainer type="create" table="event" />

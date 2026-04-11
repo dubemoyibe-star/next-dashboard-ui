@@ -11,10 +11,10 @@ const data = [
 
 const Performance = () => {
   return (
-    <div className='p-4 bg-white rounded-md h-80 relative'>
+    <div className='p-4 bg-white dark:bg-gray-800 rounded-md h-80 relative'>
       <div className='flex items-center justify-between'>
-        <h1 className='text-xl font-semibold'>Performance</h1>
-        <FaEllipsisH />
+        <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-100'>Performance</h1>
+        <FaEllipsisH className="text-gray-500 dark:text-gray-400" />
       </div>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart width={400} height={400}>
@@ -32,11 +32,11 @@ const Performance = () => {
       </ResponsiveContainer>
 
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-      <h1 className='text-3xl font-bold'>9.1</h1>
-      <p className='text-xs text-gray-300'>of 10 max LTS</p>
+      <h1 className='text-3xl font-bold text-gray-900 dark:text-gray-100'>9.1</h1>
+      <p className='text-xs text-gray-400 dark:text-gray-500'>of 10 max LTS</p>
       </div>
 
-      <h2 className='font-medium absolute bottom-16 left-0 right-0 m-auto text-center'>1st Semester - 2nd Semester</h2>
+      <h2 className='font-medium absolute bottom-16 left-0 right-0 m-auto text-center text-gray-600 dark:text-gray-400'>1st Semester - 2nd Semester</h2>
     </div>
   )
 }

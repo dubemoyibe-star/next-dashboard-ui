@@ -63,7 +63,7 @@ const TeacherForm = ({type, data, setOpen ,relatedData}: TeacherFormProps) => {
 
       <div className='flex flex-col max-h-[90vh]'>
         <form className='flex-1 overflow-y-auto flex flex-col gap-8 px-6 py-4 sidebar-scroll' onSubmit={onSubmit}>
-      <h1 className='text-xl font-semibold'>{type === "create" ? "Create a new teacher" : "Update the teacher"}</h1>
+      <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-100'>{type === "create" ? "Create a new teacher" : "Update the teacher"}</h1>
       <span className='text-sm text-gray-400 font-medium'>Authentication Information</span>
       <div className='flex justify-between gap-4 flex-wrap'>
         <InputField 
@@ -140,10 +140,10 @@ const TeacherForm = ({type, data, setOpen ,relatedData}: TeacherFormProps) => {
         />
 
          <div className="relative flex flex-col gap-2 w-full md:w-1/4">
-        <label className="text-xs text-gray-500" htmlFor='sex'>Sex</label>
+        <label className="text-xs text-gray-500 dark:text-gray-400" htmlFor='sex'>Sex</label>
 
         <div className="relative w-full">
-            <select className="cursor-pointer ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full" 
+            <select className="cursor-pointer ring-[1.5px] ring-gray-300 dark:ring-gray-600 p-2 rounded-md text-sm w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" 
             {...register("sex")} 
             id='sex'
             defaultValue={data?.sex}>
@@ -159,10 +159,10 @@ const TeacherForm = ({type, data, setOpen ,relatedData}: TeacherFormProps) => {
         </div>
 
         <div className="relative flex flex-col gap-2 w-full md:w-1/4">
-        <label className="text-xs text-gray-500" htmlFor='subjects'>Subjects</label>
+        <label className="text-xs text-gray-500 dark:text-gray-400" htmlFor='subjects'>Subjects</label>
 
         <div className="relative w-full">
-            <select multiple className="cursor-pointer ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full" 
+            <select multiple className="cursor-pointer ring-[1.5px] ring-gray-300 dark:ring-gray-600 p-2 rounded-md text-sm w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" 
             {...register("subjects")} 
             id='subjects'
             defaultValue={data?.subjects}>

@@ -12,9 +12,11 @@ export default function DashboardLayout({
       <SidebarServer />
 
       {/* Main Content */}
-      <div className="flex-1 bg-gray-50 overflow-y-auto flex flex-col relative">
+      <div className="flex-1 bg-gray-50 dark:bg-gray-900 overflow-y-auto flex flex-col relative">
         <Navbar />
-        {children}
+        <div className="flex-1 pt-5">
+          {children}
+        </div>
       </div>
     </div>
   );

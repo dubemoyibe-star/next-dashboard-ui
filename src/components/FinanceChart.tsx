@@ -69,46 +69,46 @@ const data = [
 
 const FinanceChart = () => {
   return (
-   <div className='bg-white rounded-xl w-full h-full p-4'>
-    {/* title */}
-    <div className='flex items-center justify-between'>
-      <h1 className='text-lg font-semibold'>Finance</h1>
-      <FaEllipsisH className='w-5 h-5 text-gray-500'/>
-    </div>
-    
-    <ResponsiveContainer width="100%" height="90%" >
-      <LineChart
-      width={500}
-      height={300}
-      data={data}
-      margin={{
-        top: 5,
-        right: 0,
-        left: 0,
-        bottom: 5,
-      }}
-    >
-      <CartesianGrid strokeDasharray="3 3" stroke='#ddd'/>
-      <XAxis dataKey="name" tickMargin={10} axisLine={false} tick={{fill: "#D1D5DB"}} tickLine={false}/>
-      <YAxis width="auto" tickMargin={20} axisLine={false} tick={{fill: "#D1D5DB"}} tickLine={false}/>
-      <Tooltip />
-      <Legend 
-        align='center'
-        verticalAlign='top' 
-        wrapperStyle={{paddingTop: "10px", paddingBottom: "30px"}}
-      />
-      <Line 
-      type="monotone" 
-      dataKey="income" 
-      stroke="#C3EBFA" 
-      strokeWidth={5} />
-      <Line 
-      type="monotone" 
-      dataKey="expense"
-       stroke="#CFCEFF" 
-       strokeWidth={5}/>
-    </LineChart>
-    </ResponsiveContainer>
+   <div className='bg-white dark:bg-gray-800 rounded-xl w-full h-full p-4'>
+     {/* title */}
+     <div className='flex items-center justify-between'>
+       <h1 className='text-lg font-semibold text-gray-900 dark:text-gray-100'>Finance</h1>
+       <FaEllipsisH className='w-5 h-5 text-gray-500 dark:text-gray-400'/>
+     </div>
+     
+     <ResponsiveContainer width="100%" height="90%" >
+       <LineChart
+       width={500}
+       height={300}
+       data={data}
+       margin={{
+         top: 5,
+         right: 0,
+         left: 0,
+         bottom: 5,
+       }}
+     >
+       <CartesianGrid strokeDasharray="3 3" stroke='#ddd' className="dark:stroke-gray-600"/>
+       <XAxis dataKey="name" tickMargin={10} axisLine={false} tick={{fill: "#D1D5DB"}} tickLine={false}/>
+       <YAxis width="auto" tickMargin={20} axisLine={false} tick={{fill: "#D1D5DB"}} tickLine={false}/>
+       <Tooltip contentStyle={{ backgroundColor: '#fff', border: 'none', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }} />
+       <Legend 
+         align='center'
+         verticalAlign='top' 
+         wrapperStyle={{paddingTop: "10px", paddingBottom: "30px"}}
+       />
+       <Line 
+       type="monotone" 
+       dataKey="income" 
+       stroke="#C3EBFA" 
+       strokeWidth={5} />
+       <Line 
+       type="monotone" 
+       dataKey="expense"
+        stroke="#CFCEFF" 
+        strokeWidth={5}/>
+     </LineChart>
+     </ResponsiveContainer>
    </div>
   )
 }
