@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { auth } from "@clerk/nextjs/server"
+import Link from "next/link"
 
 const Announcements = async () => {
 
@@ -27,7 +28,7 @@ const Announcements = async () => {
     <div className="bg-white dark:bg-gray-800 rounded-md p-4">
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Announcements</h1>
-        <span className="text-xs text-gray-400 dark:text-gray-500">View All</span>
+        <Link href="/list/announcements"><span className="text-xs text-gray-400 dark:text-gray-500">View All</span></Link>
       </div>
       {data[0] && <div className="flex flex-col gap-4 mt-4">
         <div className="bg-lamaSkyLight dark:bg-gray-700 rounded-md p-4">
