@@ -6,6 +6,15 @@ CrestWood is a comprehensive school management system built with modern web tech
 
 CrestWood is a full-stack school management dashboard that enables educational institutions to efficiently manage their academic operations. The system features role-based access control, allowing different users (administrators, teachers, students, and parents) to access tailored views and functionality.
 
+To be able to see what was built live , you have to assume a role 
+each role represents its respective username and password (these credentials are just dummy user accounts that let you view and understand what was built)
+
+ADMIN --> username: admin , password: admin 
+TEACHER --> username: teacher , password: teacher
+PARENT --> username: parent , password: parent 
+STUDENT --> username: student , password: student 
+
+
 ## Technology Stack
 
 ### Frontend
