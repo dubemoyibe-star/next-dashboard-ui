@@ -6,6 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader } from "lucide-react"
+import DemoCredentials from "@/components/DemoCredentials";
 
 
 const LoginPage = () => {
@@ -42,6 +43,16 @@ if (!isLoaded) {
           <div className="h-10 w-full bg-gray-200 rounded-lg" />
           <div className="h-10 w-full bg-gray-200 rounded-lg" />
           <div className="h-10 w-full bg-gray-300 rounded-lg mt-2" />
+        </div>
+
+        {/* Demo credentials */}
+        <div className="px-10 pb-6 pt-6 border-t border-gray-100 space-y-4">
+          <div className="h-4 w-36 bg-gray-200 rounded" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="h-[76px] bg-gray-100 rounded-lg" />
+            ))}
+          </div>
         </div>
 
         {/* Footer */}
@@ -130,6 +141,9 @@ if (!isLoaded) {
               )}
             </div>
           </div>
+
+          {/* Demo credentials */}
+          {!loading && <DemoCredentials />}
 
           {/* Footer */}
           <div className="px-10 pb-8 text-center border-t border-gray-100 pt-6">
